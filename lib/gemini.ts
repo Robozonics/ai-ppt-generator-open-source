@@ -5,7 +5,9 @@
  * Server-only — never import into client components.
  */
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
+const GEMINI_API_KEYS = [
+  process.env.GEMINI_API_KEY || "",
+].filter(Boolean);
 
 // gemini-3.5-flash — fast and capable model
 const MODEL = "gemini-3.5-flash";
@@ -62,11 +64,12 @@ export async function generateContent(
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
+      const currentKey = GEMINI_API_KEYS[attempt % GEMINI_API_KEYS.length] || "";
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-goog-api-key": GEMINI_API_KEY,
+          "X-goog-api-key": currentKey,
         },
         body: JSON.stringify({
           contents: [
@@ -112,6 +115,7 @@ export async function generateContent(
       lastError = err;
       const isRetryable =
         err?.status === 429 ||
+        err?.status === 403 ||
         err?.status === 503 ||
         err?.code === "ECONNRESET" ||
         err?.message?.includes("fetch failed");

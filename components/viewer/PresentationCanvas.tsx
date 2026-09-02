@@ -25,7 +25,7 @@ function renderLayout(card: any, index: number) {
     case "image_gallery":      return <ImageGallery card={card} />;
     case "quote_focus":        return <QuoteFocus card={card} />;
     case "big_number":         return <BigNumber card={card} />;
-    default:                   return index === 0 ? <TitleCard card={card} /> : null;
+    default:                   return index === 0 ? <TitleCard card={card} /> : <TwoColumnSplit card={card} />;
   }
 }
 

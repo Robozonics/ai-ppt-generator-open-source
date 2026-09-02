@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
+const GEMINI_API_KEYS = [
+  process.env.GEMINI_API_KEY || "",
+].filter(Boolean);
 const IMAGE_MODEL = "gemini-3.1-flash-image";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent`;
 
@@ -24,11 +26,12 @@ export async function POST(req: Request) {
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       try {
+        const currentKey = GEMINI_API_KEYS[attempt % GEMINI_API_KEYS.length] || "";
         const response = await fetch(API_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-goog-api-key": GEMINI_API_KEY,
+            "X-goog-api-key": currentKey,
           },
           body: JSON.stringify({
             contents: [
@@ -49,8 +52,8 @@ export async function POST(req: Request) {
           console.error(`[generate-image] API error (attempt ${attempt + 1}):`, response.status, errorText);
           lastError = `Image generation failed: ${response.status}`;
 
-          // Don't retry on 4xx errors (client errors)
-          if (response.status >= 400 && response.status < 500) {
+          // Don't retry on 4xx errors (client errors) unless it is a 403 or 429 (quota/auth which might be fixed by another key)
+          if (response.status >= 400 && response.status < 500 && response.status !== 403 && response.status !== 429) {
             break;
           }
 

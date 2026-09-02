@@ -54,7 +54,7 @@ BEFORE WRITING EACH SLIDE, THINK ABOUT:
    - Max 6-8 words per bullet point.
 3. ACTION TITLES: Do not use generic titles. State the slide's main takeaway.
 
-OUTPUT FORMAT — return ONLY this JSON structure:
+OUTPUT FORMAT — return ONLY this JSON structure (ensure the "cards" array contains ONE object for EVERY slide in the provided outline):
 {"title":"","description":"","theme":"","colorPalette":{"primary":"#hex","secondary":"#hex","accent":"#hex","background":"#hex","surface":"#hex","text":"#hex","textMuted":"#hex","accents":["#hex","#hex","#hex","#hex"]},"cards":[{"id":"","order":1,"layout":"","badgeText":"","title":"","subtitle":"","elements":[{"id":"","type":"","content":"","items":[],"metricValue":"","metricLabel":"","iconName":"","imageQuery":"","imageCaption":"","title":""}],"imagePrompt":""}]}
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -93,7 +93,9 @@ CONTENT QUALITY STANDARDS (non-negotiable):
 
 9. The "description" field in the root object should be a 1-sentence summary of the presentation's purpose.
 
-10. VALID ICON NAMES (use lowercase only): brain, zap, shield, users, target
+10. YOU MUST GENERATE ALL SLIDES FROM THE OUTLINE. Do not stop after the first slide. The "cards" array must have the exact same number of items as the outline.
+
+11. VALID ICON NAMES (use lowercase only): brain, zap, shield, users, target
 
 ═══════════════════════════════════════════════════════════════════════════════
 COLOR PALETTE DESIGN (CRITICAL — this controls the entire visual identity):

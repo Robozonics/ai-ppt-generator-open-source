@@ -19,6 +19,28 @@ export default function LandingPage() {
   
   const { deck, setDeck, isLoading, setIsLoading, activeCardId, updateCard, setActiveCard } = useDeckStore();
   const [error, setError] = useState("");
+  const [isEnhancing, setIsEnhancing] = useState(false);
+
+  const handleEnhancePrompt = async () => {
+    if (!prompt.trim()) return;
+    setIsEnhancing(true);
+    try {
+      const res = await fetch("/api/enhance-prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+      if (!res.ok) throw new Error("Failed to enhance prompt");
+      const data = await res.json();
+      if (data.enhancedPrompt) {
+        setPrompt(data.enhancedPrompt);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsEnhancing(false);
+    }
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -248,16 +270,27 @@ export default function LandingPage() {
           
           <div className="relative bg-[#0f111a]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6">
             
-            <input
-              type="text"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="What do you want to present about?"
-              className="w-full bg-black/40 border border-white/5 rounded-2xl outline-none text-xl px-6 py-5 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-pink-500/50 transition-all shadow-inner"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleGenerate();
-              }}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="What do you want to present about?"
+                className="w-full bg-black/40 border border-white/5 rounded-2xl outline-none text-xl pl-6 pr-32 py-5 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-pink-500/50 transition-all shadow-inner"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleGenerate();
+                }}
+              />
+              <button
+                onClick={handleEnhancePrompt}
+                disabled={isEnhancing || !prompt.trim()}
+                title="Enhance & Correct Prompt"
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 disabled:opacity-50 text-pink-300 p-2 rounded-xl transition-all flex items-center gap-2 text-sm font-medium"
+              >
+                {isEnhancing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                <span className="hidden sm:inline">Enhance</span>
+              </button>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               
