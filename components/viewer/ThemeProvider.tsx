@@ -19,17 +19,17 @@ const DEFAULT_PALETTE: ColorPalette = {
 };
 
 /**
- * Convert a hex color like "#6366f1" to an "R G B" string like "99 102 241"
- * for use with Tailwind's rgb() / rgba() syntax via CSS variables.
+ * Convert a hex color like "#6366f1" to an "R, G, B" string like "99, 102, 241"
+ * for use with standard CSS rgb() / rgba() syntax via CSS variables.
  */
 function hexToRgb(hex: string): string {
   const cleaned = hex.replace("#", "");
   const bigint = parseInt(cleaned, 16);
-  if (isNaN(bigint)) return "99 102 241"; // fallback
+  if (isNaN(bigint)) return "99, 102, 241"; // fallback
   const r = (bigint >> 16) & 255;
   const g = (bigint >> 8) & 255;
   const b = bigint & 255;
-  return `${r} ${g} ${b}`;
+  return `${r}, ${g}, ${b}`;
 }
 
 interface ThemeProviderProps {
