@@ -41,7 +41,10 @@ export async function POST(req: Request) {
         x: DEFAULT_MARGIN, y: TITLE_Y, w: 9, h: 0.8,
         color: "ffffff",
         fontSize: 32,
-        bold: true
+        bold: true,
+        wrap: true,
+        autoFit: true,
+        valign: "top"
       });
 
       // Add Card Subtitle
@@ -50,7 +53,9 @@ export async function POST(req: Request) {
           x: DEFAULT_MARGIN, y: TITLE_Y + 0.8, w: 9, h: 0.5,
           color: "94a3b8", // slate-400
           fontSize: 18,
-          italic: true
+          italic: true,
+          wrap: true,
+          autoFit: true
         });
       }
 
@@ -75,16 +80,18 @@ export async function POST(req: Request) {
           if (el.type === "paragraph" || el.type === "heading") {
             const isHeading = el.type === "heading";
             slide.addText(el.content || "", { 
-              x: DEFAULT_MARGIN, y: textY, w: 4.5, 
+              x: DEFAULT_MARGIN, y: textY, w: 5, h: isHeading ? 0.6 : 1.5,
               color: isHeading ? "ffffff" : "cbd5e1", 
               fontSize: isHeading ? 24 : 18,
-              bold: isHeading
+              bold: isHeading,
+              wrap: true,
+              valign: "top"
             });
-            textY += 0.8;
+            textY += isHeading ? 0.8 : 1.6;
           } else if (el.type === "bullet_list" && el.items) {
             const bullets = el.items.map(item => ({ text: item, options: { bullet: true } }));
-            slide.addText(bullets as any, { x: DEFAULT_MARGIN, y: textY, w: 4.5, color: "cbd5e1", fontSize: 18 });
-            textY += 1.5;
+            slide.addText(bullets as any, { x: DEFAULT_MARGIN, y: textY, w: 5, h: 2, color: "cbd5e1", fontSize: 18, wrap: true, valign: "top" });
+            textY += 1.8;
           } else if (el.type === "image_block" && el.imageUrl) {
             // Put image on the right side
             try {
@@ -98,15 +105,15 @@ export async function POST(req: Request) {
         // Default sequential vertical stack for other layouts
         card.elements?.forEach(el => {
           if (el.type === "paragraph") {
-            slide.addText(el.content || "", { x: DEFAULT_MARGIN, y: currentY, w: 9, color: "cbd5e1", fontSize: 16 });
-            currentY += 0.8;
+            slide.addText(el.content || "", { x: DEFAULT_MARGIN, y: currentY, w: 9, h: 1.5, color: "cbd5e1", fontSize: 16, wrap: true, valign: "top" });
+            currentY += 1.2;
           } else if (el.type === "heading") {
-            slide.addText(el.content || "", { x: DEFAULT_MARGIN, y: currentY, w: 9, color: "ffffff", fontSize: 22, bold: true });
+            slide.addText(el.content || "", { x: DEFAULT_MARGIN, y: currentY, w: 9, h: 0.6, color: "ffffff", fontSize: 22, bold: true, wrap: true, valign: "top" });
             currentY += 0.8;
           } else if (el.type === "bullet_list" && el.items) {
             const bullets = el.items.map(item => ({ text: item, options: { bullet: true } }));
-            slide.addText(bullets as any, { x: DEFAULT_MARGIN, y: currentY, w: 9, color: "cbd5e1", fontSize: 18 });
-            currentY += (el.items.length * 0.4);
+            slide.addText(bullets as any, { x: DEFAULT_MARGIN, y: currentY, w: 9, h: 2, color: "cbd5e1", fontSize: 18, wrap: true, valign: "top" });
+            currentY += (el.items.length * 0.5);
           } else if (el.type === "stat_metric") {
             slide.addText(`${el.metricValue}\n${el.metricLabel}`, { x: DEFAULT_MARGIN, y: currentY, w: 3, h: 1.5, color: "818cf8", fontSize: 24, bold: true, align: "center", fill: { color: "1e293b" } });
             currentY += 1.8;
@@ -115,11 +122,12 @@ export async function POST(req: Request) {
       }
     }
 
-    // 4. Generate the PPTX file as a buffer
-    const buffer = await pres.write({ outputType: "nodebuffer" });
+    // 4. Generate the PPTX file as an ArrayBuffer
+    // ArrayBuffer is much safer for Next.js Edge/Serverless responses than nodebuffer
+    const buffer = await pres.write({ outputType: "arraybuffer" }) as ArrayBuffer;
 
     // 5. Return as a downloadable response
-    return new NextResponse(buffer as any, {
+    return new NextResponse(buffer, {
       status: 200,
       headers: {
         "Content-Type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",

@@ -12,7 +12,6 @@
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.4",
     "framer-motion": "^13.1.1",
-    "groq-sdk": "^1.6.0",
     "lucide-react": "^1.38.0",
     "next": "16.3.3",
     "pptxgenjs": "^4.0.1",

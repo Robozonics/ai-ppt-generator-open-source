@@ -1,5 +1,5 @@
 import { Card } from "@/lib/schema";
-import { Brain, Cpu, Network } from "lucide-react";
+import { Brain, Cpu, Network, Shield, Zap, Target, Users } from "lucide-react";
 
 export function ThreeColumnGrid({ card }: { card?: Card }) {
   const title = card?.title || "Core Pillars of Autonomy";
@@ -11,32 +11,74 @@ export function ThreeColumnGrid({ card }: { card?: Card }) {
     { id: "3", type: "callout", title: "Actuation", icon: "Network", content: "Executing the plan via tool use, API calls, and interacting directly with digital environments." }
   ];
 
-  const getIcon = (name: string) => {
+  const getIcon = (name: string, colorStyle: React.CSSProperties) => {
+    const cls = "w-8 h-8";
+    const props = { className: cls, style: colorStyle };
     switch(name) {
-      case "Brain":   return <Brain className="w-10 h-10 text-indigo-400" />;
-      case "Cpu":     return <Cpu className="w-10 h-10 text-emerald-400" />;
-      case "Network": return <Network className="w-10 h-10 text-rose-400" />;
-      default:        return <Brain className="w-10 h-10 text-blue-400" />;
+      case "Brain":   case "brain":   return <Brain {...props} />;
+      case "Cpu":     case "cpu":     return <Cpu {...props} />;
+      case "Network": case "network": return <Network {...props} />;
+      case "Shield":  case "shield":  return <Shield {...props} />;
+      case "Zap":     case "zap":     return <Zap {...props} />;
+      case "Target":  case "target":  return <Target {...props} />;
+      case "Users":   case "users":   return <Users {...props} />;
+      default:                        return <Brain {...props} />;
     }
   };
 
+  // Each column uses a different accent from the theme's accent palette
+  const accentVars = ["--theme-accent-1", "--theme-accent-2", "--theme-accent-3"];
+
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="mb-12 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-white mb-4">{title}</h2>
-        {subtitle && <p className="text-xl leading-relaxed text-slate-300 max-w-3xl mx-auto">{subtitle}</p>}
+      <div className="mb-10 text-center">
+        <h2
+          className="text-3xl font-bold tracking-tight mb-3 text-transparent bg-clip-text"
+          style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))` }}
+        >
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="text-lg leading-relaxed max-w-3xl mx-auto" style={{ color: `rgb(var(--theme-text-muted))` }}>
+            {subtitle}
+          </p>
+        )}
+        <div
+          className="mt-4 mx-auto w-20 h-1 rounded-full"
+          style={{
+            backgroundImage: `linear-gradient(to right, rgb(var(--theme-accent-1)), rgb(var(--theme-accent-2)), rgb(var(--theme-accent-3)))`,
+          }}
+        />
       </div>
 
-      <div className="flex-1 grid grid-cols-3 gap-12">
-        {items.map((el: any) => (
-          <div key={el.id} className="flex flex-col bg-white/[0.04] border border-white/10 rounded-2xl p-8 hover:bg-white/[0.08] transition-all duration-300">
-            <div className="p-3 bg-white/[0.06] rounded-xl w-fit mb-6">
-              {getIcon(el.icon || el.iconName || "Brain")}
+      <div className="flex-1 grid grid-cols-3 gap-8">
+        {items.map((el: any, idx: number) => {
+          const accentVar = accentVars[idx % accentVars.length];
+          return (
+            <div
+              key={el.id || idx}
+              className="flex flex-col rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 border"
+              style={{
+                backgroundImage: `linear-gradient(to bottom, rgba(var(${accentVar}), 0.12), rgba(var(${accentVar}), 0.04))`,
+                borderColor: `rgba(var(${accentVar}), 0.25)`,
+                boxShadow: `0 0 30px -8px rgba(var(${accentVar}), 0.2)`,
+              }}
+            >
+              <div
+                className="p-3 rounded-xl w-fit mb-6"
+                style={{ backgroundColor: `rgba(var(${accentVar}), 0.15)` }}
+              >
+                {getIcon(el.icon || el.iconName || "Brain", { color: `rgb(var(${accentVar}))` })}
+              </div>
+              <h3 className="text-xl font-bold mb-4" style={{ color: `rgb(var(--theme-text))` }}>
+                {el.title || el.content?.slice(0, 30) || "Feature"}
+              </h3>
+              <p className="text-base leading-relaxed" style={{ color: `rgb(var(--theme-text-muted))` }}>
+                {el.content}
+              </p>
             </div>
-            <h3 className="text-xl font-semibold text-white mb-4">{el.title || "Feature"}</h3>
-            <p className="text-xl leading-relaxed text-slate-300">{el.content}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

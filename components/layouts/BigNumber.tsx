@@ -8,40 +8,91 @@ export function BigNumber({ card }: { card: Card }) {
       
       {/* Left side text */}
       <div className="flex-1 pr-12 space-y-6">
-        <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight drop-shadow-md">
+        <h2
+          className="text-4xl md:text-5xl font-black tracking-tight leading-tight drop-shadow-md text-transparent bg-clip-text"
+          style={{
+            backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))`,
+          }}
+        >
           {card.title}
         </h2>
         {card.subtitle && (
-          <p className="text-2xl text-slate-300 leading-relaxed max-w-xl">
+          <p className="text-xl leading-relaxed max-w-xl" style={{ color: `rgb(var(--theme-text-muted))` }}>
             {card.subtitle}
           </p>
         )}
         
-        {/* Supporting paragraphs */}
-        <div className="pt-8 space-y-4">
-          {card.elements?.filter(el => el.type === "paragraph").map(p => (
-            <p key={p.id} className="text-lg text-slate-400 leading-relaxed border-l-2 border-indigo-500/50 pl-4">
+        {/* Supporting paragraphs with colored accent border */}
+        <div className="pt-6 space-y-4">
+          {card.elements?.filter(el => el.type === "paragraph").map((p: any, idx: number) => (
+            <p
+              key={p.id || idx}
+              className="text-lg leading-relaxed pl-4"
+              style={{
+                color: `rgb(var(--theme-text-muted))`,
+                borderLeft: `2px solid rgba(var(--theme-primary), 0.5)`,
+              }}
+            >
               {p.content}
             </p>
+          ))}
+          {card.elements?.filter(el => el.type === "bullet_list").map((el: any, idx: number) => (
+            <ul key={el.id || idx} className="space-y-2 text-lg" style={{ color: `rgb(var(--theme-text-muted))` }}>
+              {el.items?.map((item: string, i: number) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span
+                    className="mt-2 w-2 h-2 rounded-full shrink-0"
+                    style={{
+                      backgroundImage: `linear-gradient(to bottom right, rgb(var(--theme-primary)), rgb(var(--theme-secondary)))`,
+                      boxShadow: `0 0 8px rgba(var(--theme-primary), 0.5)`,
+                    }}
+                  />
+                  {item}
+                </li>
+              ))}
+            </ul>
           ))}
         </div>
       </div>
 
       {/* Right side MASSIVE number */}
-      <div className="flex-1 flex flex-col items-center justify-center bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-16 shadow-2xl relative overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      <div
+        className="flex-1 flex flex-col items-center justify-center backdrop-blur-xl rounded-3xl p-16 relative overflow-hidden group border"
+        style={{
+          backgroundImage: `linear-gradient(to bottom right, rgba(var(--theme-primary), 0.1), rgba(var(--theme-secondary), 0.05), rgba(var(--theme-accent), 0.1))`,
+          borderColor: `rgba(var(--theme-primary), 0.2)`,
+          boxShadow: `0 0 60px -15px rgba(var(--theme-primary), 0.2)`,
+        }}
+      >
+        {/* Animated glow pulse */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 animate-pulse-glow"
+          style={{
+            backgroundImage: `linear-gradient(to bottom right, rgba(var(--theme-primary), 0.1), rgba(var(--theme-secondary), 0.1), rgba(var(--theme-accent), 0.1))`,
+          }}
+        />
         
         {statEl ? (
           <>
-            <span className="text-[120px] font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500 drop-shadow-2xl leading-none tracking-tighter hover:scale-105 transition-transform duration-500">
+            <span
+              className="text-[110px] font-black drop-shadow-2xl leading-none tracking-tighter hover:scale-105 transition-transform duration-500 z-10 text-transparent bg-clip-text"
+              style={{
+                backgroundImage: `linear-gradient(to bottom, rgba(var(--theme-primary), 0.9), rgb(var(--theme-secondary)))`,
+              }}
+            >
               {statEl.metricValue}
             </span>
-            <span className="mt-8 text-2xl font-bold text-indigo-300 uppercase tracking-widest text-center">
+            <span
+              className="mt-6 text-xl font-bold uppercase tracking-widest text-center z-10 text-transparent bg-clip-text"
+              style={{
+                backgroundImage: `linear-gradient(to right, rgb(var(--theme-primary)), rgb(var(--theme-secondary)))`,
+              }}
+            >
               {statEl.metricLabel}
             </span>
           </>
         ) : (
-          <span className="text-slate-500 italic">No stat_metric found</span>
+          <span style={{ color: `rgb(var(--theme-text-muted))` }} className="italic">No stat_metric found</span>
         )}
       </div>
 

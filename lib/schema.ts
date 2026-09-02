@@ -10,7 +10,8 @@ export const ElementSchema = z.object({
   iconName: z.string().optional(),
   imageQuery: z.string().optional(),
   imageCaption: z.string().optional(),
-  imageUrl: z.string().optional()
+  imageUrl: z.string().optional(),
+  title: z.string().optional()
 });
 
 export const CardLayoutEnum = z.enum([
@@ -38,13 +39,27 @@ export const CardSchema = z.object({
   imageUrl: z.string().optional()
 });
 
+export const ColorPaletteSchema = z.object({
+  primary: z.string(),       // Main accent — e.g. "#6366f1"
+  secondary: z.string(),     // Secondary accent — e.g. "#ec4899"
+  accent: z.string(),        // Highlight/callout — e.g. "#10b981"
+  background: z.string(),    // Slide background — e.g. "#0b0f19"
+  surface: z.string(),       // Card/panel surface — e.g. "#1a1a2e"
+  text: z.string(),          // Primary text color — e.g. "#f8fafc"
+  textMuted: z.string(),     // Secondary text — e.g. "#94a3b8"
+  accents: z.array(z.string()).optional()  // 3-4 distinct accents for multi-column layouts
+});
+
 export const PresentationDeckSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
   theme: z.enum(["nebula_dark", "cyber_obsidian", "aurora_glass", "minimal_light", "editorial_serif"]),
+  colorPalette: ColorPaletteSchema.optional(),
   cards: z.array(CardSchema)
 });
 
 export type PresentationDeck = z.infer<typeof PresentationDeckSchema>;
 export type Card = z.infer<typeof CardSchema>;
 export type Element = z.infer<typeof ElementSchema>;
+export type ColorPalette = z.infer<typeof ColorPaletteSchema>;
+

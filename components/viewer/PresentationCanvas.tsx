@@ -2,6 +2,7 @@
 
 import { useDeckStore } from "@/lib/store";
 import { SlideCard } from "./SlideCard";
+import { ThemeProvider } from "./ThemeProvider";
 import { TitleCard } from "../layouts/TitleCard";
 import { TwoColumnSplit } from "../layouts/TwoColumnSplit";
 import { ThreeColumnGrid } from "../layouts/ThreeColumnGrid";
@@ -12,8 +13,9 @@ import { ImageGallery } from "../layouts/ImageGallery";
 import { QuoteFocus } from "../layouts/QuoteFocus";
 import { BigNumber } from "../layouts/BigNumber";
 
-function renderLayout(card: any) {
-  switch (card.layout) {
+function renderLayout(card: any, index: number) {
+  const layout = (card.layout || "").toLowerCase().trim();
+  switch (layout) {
     case "title_hero":         return <TitleCard card={card} />;
     case "two_column_split":   return <TwoColumnSplit card={card} />;
     case "three_column_grid":  return <ThreeColumnGrid card={card} />;
@@ -23,7 +25,7 @@ function renderLayout(card: any) {
     case "image_gallery":      return <ImageGallery card={card} />;
     case "quote_focus":        return <QuoteFocus card={card} />;
     case "big_number":         return <BigNumber card={card} />;
-    default:                   return null;
+    default:                   return index === 0 ? <TitleCard card={card} /> : null;
   }
 }
 
@@ -38,39 +40,26 @@ export function PresentationCanvas() {
     );
   }
 
-  // Dynamic Canvas Background based on Theme
-  const getCanvasBackground = () => {
-    switch(deck.theme) {
-      case "cyber_obsidian":
-        return "bg-black selection:bg-green-500/30";
-      case "aurora_glass":
-        return "bg-slate-900 selection:bg-teal-500/30";
-      case "minimal_light":
-        return "bg-slate-100 selection:bg-indigo-500/30";
-      case "editorial_serif":
-        return "bg-[#f0ede6] selection:bg-amber-900/30";
-      case "nebula_dark":
-      default:
-        return "bg-[#0b0f19] selection:bg-pink-500/30";
-    }
-  };
-
   return (
-    <div className={`h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth flex flex-col items-center gap-24 py-24 relative presentation-track ${getCanvasBackground()}`}>
+    <ThemeProvider
+      palette={deck.colorPalette}
+      className="h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth flex flex-col items-center gap-24 py-24 relative presentation-track"
+    >
+      {/* Dynamic background based on the palette */}
+      <div
+        className="fixed inset-0 -z-10"
+        style={{ backgroundColor: `rgb(var(--theme-bg))` }}
+      />
       
-      {/* Ambient background glows for specific themes */}
-      {deck.theme === "cyber_obsidian" && (
-        <div className="absolute top-[20%] left-[10%] w-[40%] h-[40%] bg-green-900/10 blur-[150px] rounded-full pointer-events-none fixed" />
-      )}
-      {deck.theme === "aurora_glass" && (
-        <>
-          <div className="absolute top-[10%] left-[20%] w-[30%] h-[30%] bg-teal-600/10 blur-[120px] rounded-full pointer-events-none fixed" />
-          <div className="absolute bottom-[20%] right-[10%] w-[40%] h-[40%] bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none fixed" />
-        </>
-      )}
-      {(deck.theme === "nebula_dark" || !deck.theme) && (
-        <div className="absolute top-[30%] left-[30%] w-[30%] h-[30%] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none fixed" />
-      )}
+      {/* Ambient background glow — uses theme colors */}
+      <div
+        className="fixed top-[20%] left-[15%] w-[35%] h-[35%] rounded-full blur-[150px] pointer-events-none -z-5"
+        style={{ backgroundColor: `rgba(var(--theme-primary), 0.08)` }}
+      />
+      <div
+        className="fixed bottom-[15%] right-[10%] w-[30%] h-[30%] rounded-full blur-[120px] pointer-events-none -z-5"
+        style={{ backgroundColor: `rgba(var(--theme-secondary), 0.06)` }}
+      />
 
       {/* Slide Cards */}
       <div className="z-10 flex flex-col items-center gap-24 w-full px-6">
@@ -82,10 +71,10 @@ export function PresentationCanvas() {
             isActive={activeCardId === card.id}
             onClick={() => setActiveCard(activeCardId === card.id ? null : card.id)}
           >
-            {renderLayout(card)}
+            {renderLayout(card, index)}
           </SlideCard>
         ))}
       </div>
-    </div>
+    </ThemeProvider>
   );
 }

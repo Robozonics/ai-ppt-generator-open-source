@@ -11,46 +11,94 @@ export function TimelineCard({ card }: { card?: Card }) {
     { id: "4", type: "callout", title: "2026: True Autonomy", content: "End-to-end autonomous digital workers operating independently." }
   ];
 
-  const nodeColors = [
-    "bg-indigo-500 shadow-indigo-500/30",
-    "bg-emerald-500 shadow-emerald-500/30",
-    "bg-amber-500 shadow-amber-500/30",
-    "bg-rose-500 shadow-rose-500/30",
-  ];
+  // Each node uses a different accent from the palette
+  const accentVars = ["--theme-accent-1", "--theme-accent-2", "--theme-accent-3", "--theme-accent-4"];
 
   return (
     <div className="w-full h-full flex flex-col">
-      <h2 className="text-3xl font-bold tracking-tight text-white mb-16 text-center">{title}</h2>
+      <h2
+        className="text-3xl font-bold tracking-tight mb-4 text-center text-transparent bg-clip-text"
+        style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))` }}
+      >
+        {title}
+      </h2>
+      <div
+        className="mx-auto w-20 h-1 rounded-full mb-14"
+        style={{
+          backgroundImage: `linear-gradient(to right, rgb(var(--theme-accent-1)), rgb(var(--theme-accent-3)), rgb(var(--theme-accent-4)))`,
+        }}
+      />
 
       <div className="relative flex-1 flex flex-col justify-center">
-        {/* Horizontal track line */}
-        <div className="absolute top-1/2 left-4 right-4 h-[2px] bg-gradient-to-r from-indigo-500/40 via-white/20 to-rose-500/40 -translate-y-1/2" />
+        {/* Gradient track line */}
+        <div
+          className="absolute top-1/2 left-4 right-4 h-[3px] -translate-y-1/2 rounded-full"
+          style={{
+            backgroundImage: `linear-gradient(to right, rgba(var(--theme-accent-1), 0.6), rgba(var(--theme-accent-2), 0.4), rgba(var(--theme-accent-3), 0.4), rgba(var(--theme-accent-4), 0.6))`,
+          }}
+        />
+        {/* Glowing pulse overlay on track */}
+        <div
+          className="absolute top-1/2 left-4 right-4 h-[3px] -translate-y-1/2 rounded-full animate-pulse-glow"
+          style={{
+            backgroundImage: `linear-gradient(to right, rgba(var(--theme-accent-1), 0.3), rgba(var(--theme-accent-2), 0.2), rgba(var(--theme-accent-3), 0.2), rgba(var(--theme-accent-4), 0.3))`,
+          }}
+        />
 
-        <div className="grid grid-cols-4 gap-12 relative z-10 w-full">
-          {milestones.map((el: any, index: number) => (
-            <div key={el.id} className="flex flex-col items-center text-center">
-              <div className={`flex flex-col items-center ${index % 2 === 0 ? "mb-6" : "mt-20"}`}>
-                {index % 2 === 0 && (
-                  <div className="mb-6 flex flex-col justify-end">
-                    <h3 className="text-lg font-bold text-white mb-2">{el.title}</h3>
-                    <p className="text-sm leading-relaxed text-slate-300">{el.content}</p>
+        <div className="grid grid-cols-4 gap-8 relative z-10 w-full">
+          {milestones.map((el: any, index: number) => {
+            const accentVar = accentVars[index % accentVars.length];
+            return (
+              <div key={el.id || index} className="flex flex-col items-center text-center">
+                <div className={`flex flex-col items-center ${index % 2 === 0 ? "mb-6" : "mt-16"}`}>
+                  {index % 2 === 0 && (
+                    <div
+                      className="mb-6 flex flex-col justify-end p-4 rounded-xl backdrop-blur-sm border"
+                      style={{
+                        backgroundColor: `rgba(var(--theme-text), 0.03)`,
+                        borderColor: `rgba(var(${accentVar}), 0.3)`,
+                      }}
+                    >
+                      <h3 className="text-base font-bold mb-2" style={{ color: `rgb(var(${accentVar}))` }}>
+                        {el.title}
+                      </h3>
+                      <p className="text-sm leading-relaxed" style={{ color: `rgb(var(--theme-text-muted))` }}>
+                        {el.content}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Glowing Node */}
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110"
+                    style={{
+                      backgroundColor: `rgb(var(${accentVar}))`,
+                      boxShadow: `0 0 20px rgba(var(${accentVar}), 0.5)`,
+                    }}
+                  >
+                    <CircleDot className="w-6 h-6 text-white" />
                   </div>
-                )}
 
-                {/* Node */}
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg ${nodeColors[index % nodeColors.length]}`}>
-                  <CircleDot className="w-5 h-5 text-white" />
+                  {index % 2 !== 0 && (
+                    <div
+                      className="mt-6 flex flex-col justify-start p-4 rounded-xl backdrop-blur-sm border"
+                      style={{
+                        backgroundColor: `rgba(var(--theme-text), 0.03)`,
+                        borderColor: `rgba(var(${accentVar}), 0.3)`,
+                      }}
+                    >
+                      <h3 className="text-base font-bold mb-2" style={{ color: `rgb(var(${accentVar}))` }}>
+                        {el.title}
+                      </h3>
+                      <p className="text-sm leading-relaxed" style={{ color: `rgb(var(--theme-text-muted))` }}>
+                        {el.content}
+                      </p>
+                    </div>
+                  )}
                 </div>
-
-                {index % 2 !== 0 && (
-                  <div className="mt-6 flex flex-col justify-start">
-                    <h3 className="text-lg font-bold text-white mb-2">{el.title}</h3>
-                    <p className="text-sm leading-relaxed text-slate-300">{el.content}</p>
-                  </div>
-                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

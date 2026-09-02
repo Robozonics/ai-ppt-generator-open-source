@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDeckStore } from "@/lib/store";
 import { PresentationCanvas } from "@/components/viewer/PresentationCanvas";
 import { AIChatSidebar } from "@/components/editor/AIChatSidebar";
+import { GeneratingOverlay } from "@/components/editor/GeneratingOverlay";
 import { Loader2, Sparkles, Wand2, Layers, AlignLeft, Palette, Check, Download, FileText, Play } from "lucide-react";
 
 type Verbosity = "short" | "medium" | "detailed";
@@ -100,12 +101,48 @@ export default function LandingPage() {
 
   const togglePresentMode = () => {
     setActiveCard(null); // Deselect any cards
-    setIsPresentMode(!isPresentMode);
+    if (!isPresentMode) {
+      document.documentElement.requestFullscreen().catch(err => console.log(err));
+    } else {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(err => console.log(err));
+      }
+    }
   };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsPresentMode(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!document.fullscreenElement) return;
+      if (document.activeElement?.tagName === "INPUT" || document.activeElement?.tagName === "TEXTAREA") return;
+
+      const track = document.querySelector('.presentation-track');
+      if (!track) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        track.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        track.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   if (deck) {
     return (
-      <main className="w-full h-screen bg-[#0b0f19] flex flex-col relative overflow-hidden">
+      <main className="w-full h-screen flex flex-col relative overflow-hidden" style={{ backgroundColor: deck.colorPalette?.background || '#0b0f19' }}>
+        <GeneratingOverlay isVisible={isLoading} />
         
         {/* Navbar */}
         {!isPresentMode && (
@@ -180,6 +217,7 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen relative overflow-x-hidden overflow-y-auto flex flex-col items-center p-6 selection:bg-pink-500/30 bg-[#050505]">
+      <GeneratingOverlay isVisible={isLoading} />
       
       {/* Colorful Background Gradients */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-600/20 blur-[120px] pointer-events-none" />
@@ -278,9 +316,10 @@ export default function LandingPage() {
                     onChange={(e) => setTheme(e.target.value)}
                     className="w-full appearance-none bg-black/40 border border-white/5 rounded-xl outline-none text-sm px-4 py-3 text-white focus:ring-1 focus:ring-purple-500/50 transition-all shadow-inner cursor-pointer"
                   >
-                    <option value="nebula_dark">Nebula Dark</option>
+                    <option value="nebula_dark">🎨 AI Auto (Recommended)</option>
                     <option value="cyber_obsidian">Cyber Obsidian</option>
                     <option value="aurora_glass">Aurora Glass</option>
+                    <option value="minimal_light">Minimal Light</option>
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                     <Check className="w-4 h-4 text-purple-400 opacity-50" />
