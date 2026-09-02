@@ -27,13 +27,14 @@ export function TitleCard({ card }: { card?: Card }) {
           className="relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold tracking-wider uppercase mb-12 z-10 border"
           style={{
             background: `linear-gradient(to right, rgba(var(--theme-primary), 0.2), rgba(var(--theme-secondary), 0.2))`,
-            color: `rgb(var(--theme-primary))`,
             borderColor: `rgba(var(--theme-primary), 0.3)`,
             boxShadow: `0 0 20px -5px rgba(var(--theme-primary), 0.3)`,
           }}
         >
           <Sparkles className="w-4 h-4" style={{ color: `rgb(var(--theme-primary))` }} />
-          {badge}
+          <span className="text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-primary)), rgb(var(--theme-secondary)))` }}>
+            {badge}
+          </span>
         </div>
       )}
 

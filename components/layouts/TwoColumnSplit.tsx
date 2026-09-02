@@ -46,12 +46,12 @@ export function TwoColumnSplit({ card }: { card?: Card }) {
                 </h3>
               )}
               {el.type === "paragraph" && (
-                <p style={{ color: `rgb(var(--theme-text-muted))` }} className="text-lg leading-relaxed">
+                <p style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }} className="text-lg leading-relaxed text-transparent bg-clip-text">
                   {el.content}
                 </p>
               )}
               {el.type === "bullet_list" && (
-                <ul className="space-y-3 text-lg leading-relaxed" style={{ color: `rgb(var(--theme-text-muted))` }}>
+                <ul className="space-y-3 text-lg leading-relaxed text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
                   {el.items?.map((item: string, i: number) => (
                     <li key={i} className="flex items-start gap-3">
                       <span
@@ -68,12 +68,12 @@ export function TwoColumnSplit({ card }: { card?: Card }) {
               )}
               {el.type === "callout" && (
                 <div
-                  className="p-4 rounded-xl"
+                  className="p-4 rounded-xl text-transparent bg-clip-text"
                   style={{
                     backgroundColor: `rgba(var(--theme-primary), 0.1)`,
                     borderColor: `rgba(var(--theme-primary), 0.2)`,
                     border: `1px solid rgba(var(--theme-primary), 0.2)`,
-                    color: `rgb(var(--theme-text))`,
+                    backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))`,
                   }}
                 >
                   {el.content}

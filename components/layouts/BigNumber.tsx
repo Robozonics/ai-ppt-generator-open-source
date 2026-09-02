@@ -17,7 +17,7 @@ export function BigNumber({ card }: { card: Card }) {
           {card.title}
         </h2>
         {card.subtitle && (
-          <p className="text-xl leading-relaxed max-w-xl" style={{ color: `rgb(var(--theme-text-muted))` }}>
+          <p className="text-xl leading-relaxed max-w-xl text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
             {card.subtitle}
           </p>
         )}
@@ -27,9 +27,9 @@ export function BigNumber({ card }: { card: Card }) {
           {card.elements?.filter(el => el.type === "paragraph").map((p: any, idx: number) => (
             <p
               key={p.id || idx}
-              className="text-lg leading-relaxed pl-4"
+              className="text-lg leading-relaxed pl-4 text-transparent bg-clip-text"
               style={{
-                color: `rgb(var(--theme-text-muted))`,
+                backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))`,
                 borderLeft: `2px solid rgba(var(--theme-primary), 0.5)`,
               }}
             >
@@ -37,7 +37,7 @@ export function BigNumber({ card }: { card: Card }) {
             </p>
           ))}
           {card.elements?.filter(el => el.type === "bullet_list").map((el: any, idx: number) => (
-            <ul key={el.id || idx} className="space-y-2 text-lg" style={{ color: `rgb(var(--theme-text-muted))` }}>
+            <ul key={el.id || idx} className="space-y-2 text-lg text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
               {el.items?.map((item: string, i: number) => (
                 <li key={i} className="flex items-start gap-3">
                   <span
@@ -92,7 +92,7 @@ export function BigNumber({ card }: { card: Card }) {
             </span>
           </>
         ) : (
-          <span style={{ color: `rgb(var(--theme-text-muted))` }} className="italic">No stat_metric found</span>
+          <span style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }} className="italic text-transparent bg-clip-text">No stat_metric found</span>
         )}
       </div>
 

@@ -36,7 +36,7 @@ export function MetricCard({ card }: { card?: Card }) {
           {title}
         </h2>
         {subtitle && (
-          <p className="text-lg leading-relaxed max-w-3xl mx-auto" style={{ color: `rgb(var(--theme-text-muted))` }}>
+          <p className="text-lg leading-relaxed max-w-3xl mx-auto text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
             {subtitle}
           </p>
         )}
@@ -76,8 +76,8 @@ export function MetricCard({ card }: { card?: Card }) {
                 {el.metricValue}
               </div>
               <div
-                className="text-sm leading-relaxed font-semibold text-center uppercase tracking-wider"
-                style={{ color: `rgb(var(--theme-text-muted))` }}
+                className="text-sm leading-relaxed font-semibold text-center uppercase tracking-wider text-transparent bg-clip-text"
+                style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}
               >
                 {el.metricLabel}
               </div>

@@ -46,19 +46,19 @@ export function ComparisonCard({ card }: { card?: Card }) {
               borderBottom: `1px solid rgba(var(--theme-text), 0.1)`,
             }}
           >
-            <div className="p-5 font-semibold text-base uppercase tracking-wider" style={{ color: `rgb(var(--theme-text-muted))` }}>
+            <div className="p-5 font-semibold text-base uppercase tracking-wider text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
               Capability
             </div>
             <div
-              className="p-5 font-bold text-base text-center"
-              style={{ color: `rgb(var(--theme-accent))`, borderLeft: `1px solid rgba(var(--theme-text), 0.1)` }}
+              className="p-5 text-lg font-bold uppercase tracking-wider text-transparent bg-clip-text"
+              style={{ backgroundImage: `linear-gradient(to bottom right, rgb(var(--theme-accent)), rgba(var(--theme-accent), 0.7))`, borderLeft: `1px solid rgba(var(--theme-text), 0.1)` }}
             >
               Traditional
             </div>
             <div
-              className="p-5 font-bold text-base text-center"
+              className="p-5 text-lg font-bold uppercase tracking-wider text-transparent bg-clip-text"
               style={{
-                color: `rgb(var(--theme-primary))`,
+                backgroundImage: `linear-gradient(to right, rgb(var(--theme-primary)), rgba(var(--theme-primary), 0.7))`,
                 borderLeft: `1px solid rgba(var(--theme-text), 0.1)`,
                 backgroundColor: `rgba(var(--theme-primary), 0.06)`,
               }}
@@ -78,7 +78,7 @@ export function ComparisonCard({ card }: { card?: Card }) {
                   borderBottom: idx < features.length - 1 ? `1px solid rgba(var(--theme-text), 0.06)` : 'none',
                 }}
               >
-                <div className="p-5 font-medium text-lg flex items-center" style={{ color: `rgb(var(--theme-text-muted))` }}>
+                <div className="p-5 font-medium text-lg flex items-center text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
                   {feature.name}
                 </div>
 

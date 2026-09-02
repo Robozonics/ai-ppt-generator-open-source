@@ -16,7 +16,7 @@ export function ImageGallery({ card }: { card: Card }) {
           {card.title}
         </h2>
         {card.subtitle && (
-          <p className="text-lg max-w-3xl mx-auto leading-relaxed" style={{ color: `rgb(var(--theme-text-muted))` }}>
+          <p className="text-lg max-w-3xl mx-auto leading-relaxed text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
             {card.subtitle}
           </p>
         )}
@@ -56,18 +56,18 @@ export function ImageGallery({ card }: { card: Card }) {
               >
                 <div className="flex flex-col items-center gap-2">
                   <div className="w-10 h-10 rounded-full animate-pulse" style={{ backgroundColor: `rgba(var(--theme-text), 0.1)` }} />
-                  <span className="text-sm" style={{ color: `rgb(var(--theme-text-muted))` }}>Loading...</span>
+                  <span className="text-sm text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>Loading...</span>
                 </div>
               </div>
             )}
             
             {/* Image number badge */}
             <div
-              className="absolute top-3 left-3 z-20 w-8 h-8 rounded-full backdrop-blur-sm flex items-center justify-center text-xs font-bold border"
+              className="absolute top-3 left-3 z-20 w-8 h-8 rounded-full backdrop-blur-sm flex items-center justify-center text-xs font-bold border text-transparent bg-clip-text"
               style={{
                 backgroundColor: `rgba(var(--theme-bg), 0.5)`,
                 borderColor: `rgba(var(--theme-text), 0.2)`,
-                color: `rgb(var(--theme-text))`,
+                backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))`,
               }}
             >
               {i + 1}
@@ -75,15 +75,15 @@ export function ImageGallery({ card }: { card: Card }) {
 
             {img.imageCaption && (
               <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-                <p className="font-medium drop-shadow-sm" style={{ color: `rgb(var(--theme-text))` }}>{img.imageCaption}</p>
+                <p className="font-medium drop-shadow-sm text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))` }}>{img.imageCaption}</p>
               </div>
             )}
           </div>
         ))}
         {images.length === 0 && (
            <div
-             className="col-span-full flex items-center justify-center border-2 border-dashed rounded-2xl min-h-[200px]"
-             style={{ borderColor: `rgba(var(--theme-text), 0.1)`, color: `rgb(var(--theme-text-muted))` }}
+             className="col-span-full flex items-center justify-center border-2 border-dashed rounded-2xl min-h-[200px] text-transparent bg-clip-text"
+             style={{ borderColor: `rgba(var(--theme-text), 0.1)`, backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}
            >
              Add image_block elements to see the gallery.
            </div>

@@ -59,10 +59,10 @@ export function TimelineCard({ card }: { card?: Card }) {
                         borderColor: `rgba(var(${accentVar}), 0.3)`,
                       }}
                     >
-                      <h3 className="text-base font-bold mb-2" style={{ color: `rgb(var(${accentVar}))` }}>
+                      <h3 className="text-base font-bold mb-2 text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to bottom right, rgb(var(${accentVar})), rgba(var(${accentVar}), 0.7))` }}>
                         {el.title}
                       </h3>
-                      <p className="text-sm leading-relaxed" style={{ color: `rgb(var(--theme-text-muted))` }}>
+                      <p className="text-sm leading-relaxed text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
                         {el.content}
                       </p>
                     </div>
@@ -87,10 +87,10 @@ export function TimelineCard({ card }: { card?: Card }) {
                         borderColor: `rgba(var(${accentVar}), 0.3)`,
                       }}
                     >
-                      <h3 className="text-base font-bold mb-2" style={{ color: `rgb(var(${accentVar}))` }}>
+                      <h3 className="text-base font-bold mb-2 text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to bottom right, rgb(var(${accentVar})), rgba(var(${accentVar}), 0.7))` }}>
                         {el.title}
                       </h3>
-                      <p className="text-sm leading-relaxed" style={{ color: `rgb(var(--theme-text-muted))` }}>
+                      <p className="text-sm leading-relaxed text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
                         {el.content}
                       </p>
                     </div>

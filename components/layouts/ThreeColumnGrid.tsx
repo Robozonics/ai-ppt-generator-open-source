@@ -39,7 +39,7 @@ export function ThreeColumnGrid({ card }: { card?: Card }) {
           {title}
         </h2>
         {subtitle && (
-          <p className="text-lg leading-relaxed max-w-3xl mx-auto" style={{ color: `rgb(var(--theme-text-muted))` }}>
+          <p className="text-lg leading-relaxed max-w-3xl mx-auto text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
             {subtitle}
           </p>
         )}
@@ -70,10 +70,10 @@ export function ThreeColumnGrid({ card }: { card?: Card }) {
               >
                 {getIcon(el.icon || el.iconName || "Brain", { color: `rgb(var(${accentVar}))` })}
               </div>
-              <h3 className="text-xl font-bold mb-4" style={{ color: `rgb(var(--theme-text))` }}>
+              <h3 className="text-xl font-bold mb-4 text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))` }}>
                 {el.title || el.content?.slice(0, 30) || "Feature"}
               </h3>
-              <p className="text-base leading-relaxed" style={{ color: `rgb(var(--theme-text-muted))` }}>
+              <p className="text-base leading-relaxed text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
                 {el.content}
               </p>
             </div>
