@@ -30,7 +30,7 @@ EDITING RULES:
 
 export async function POST(req: Request) {
   try {
-    const { instruction, currentCard, colorPalette } = await req.json();
+    const { instruction, currentCard, colorPalette, imageSource } = await req.json();
 
     if (!instruction || !currentCard) {
       return NextResponse.json(
@@ -60,17 +60,21 @@ export async function POST(req: Request) {
     modifiedCard.id = currentCard.id;
     modifiedCard.order = currentCard.order;
 
-    // Re-hydrate image URLs via Pollinations if prompts were modified
+    // Re-hydrate image URLs via appropriate resolver if prompts were modified
     if (modifiedCard.imagePrompt && typeof modifiedCard.imagePrompt === "string") {
-      const { resolveImageUrl } = await import("@/lib/imageResolver");
-      modifiedCard.imageUrl = resolveImageUrl(modifiedCard.imagePrompt);
+      const { resolveImageUrl, resolveWebImage } = await import("@/lib/imageResolver");
+      modifiedCard.imageUrl = imageSource === "web" 
+        ? resolveWebImage(modifiedCard.imagePrompt) 
+        : resolveImageUrl(modifiedCard.imagePrompt);
     }
 
     if (modifiedCard.elements && Array.isArray(modifiedCard.elements)) {
-      const { resolveImageUrl } = await import("@/lib/imageResolver");
+      const { resolveImageUrl, resolveWebImage } = await import("@/lib/imageResolver");
       modifiedCard.elements = modifiedCard.elements.map((el: any) => {
         if (el.type === "image_block" && el.imageQuery && typeof el.imageQuery === "string") {
-          el.imageUrl = resolveImageUrl(el.imageQuery);
+          el.imageUrl = imageSource === "web" 
+            ? resolveWebImage(el.imageQuery) 
+            : resolveImageUrl(el.imageQuery);
         }
         return el;
       });

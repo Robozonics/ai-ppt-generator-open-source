@@ -55,6 +55,7 @@ export const PresentationDeckSchema = z.object({
   description: z.string().optional(),
   theme: z.enum(["nebula_dark", "cyber_obsidian", "aurora_glass", "minimal_light", "editorial_serif"]),
   colorPalette: ColorPaletteSchema.optional(),
+  imageSource: z.enum(["ai", "web"]).optional(),
   cards: z.array(CardSchema)
 });
 

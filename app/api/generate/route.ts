@@ -274,6 +274,9 @@ export async function POST(req: Request) {
       // it has minor schema deviations (e.g. extra fields).
     }
 
+    // Attach imageSource so it can be preserved and used in the editor
+    deck.imageSource = imageSource;
+
     return NextResponse.json(deck, { status: 200 });
   } catch (error: any) {
     console.error("[generate] Pipeline error:", error);

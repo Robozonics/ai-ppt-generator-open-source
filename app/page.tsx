@@ -84,7 +84,7 @@ export default function LandingPage() {
     const res = await fetch("/api/modify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ instruction, currentCard, colorPalette: deck.colorPalette }),
+      body: JSON.stringify({ instruction, currentCard, colorPalette: deck.colorPalette, imageSource: deck.imageSource }),
     });
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
