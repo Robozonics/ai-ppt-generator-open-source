@@ -28,9 +28,8 @@ function renderLayout(card: any, index: number) {
     default:                   return index === 0 ? <TitleCard card={card} /> : <TwoColumnSplit card={card} />;
   }
 }
-
 import { useState, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, Maximize2, Minimize2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Maximize2, Minimize2, X, Sparkles, Brain, Zap } from "lucide-react";
 
 export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: boolean }) {
   const { deck, activeCardId, setActiveCard } = useDeckStore();
@@ -38,17 +37,18 @@ export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: 
   const containerRef = useRef<HTMLDivElement>(null);
 
   const totalCards = deck?.cards?.length || 0;
+  const totalSlides = totalCards > 0 ? totalCards + 1 : 0;
 
   // Track active slide based on scroll position in presentation mode
   useEffect(() => {
     const handleScroll = () => {
       const container = document.querySelector(".presentation-track");
-      if (!container || totalCards === 0) return;
+      if (!container || totalSlides === 0) return;
 
       const scrollTop = container.scrollTop;
       const cardHeight = window.innerHeight;
       const index = Math.round(scrollTop / cardHeight);
-      setCurrentSlideIndex(Math.min(Math.max(0, index), totalCards - 1));
+      setCurrentSlideIndex(Math.min(Math.max(0, index), totalSlides - 1));
     };
 
     const container = document.querySelector(".presentation-track");
@@ -60,7 +60,7 @@ export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: 
         container.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [totalCards]);
+  }, [totalSlides]);
 
   const scrollToSlide = (index: number) => {
     const container = document.querySelector(".presentation-track");
@@ -102,12 +102,12 @@ export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: 
       }`}
     >
       {/* Top Animated Progress Bar in Presentation Mode */}
-      {isPresentMode && totalCards > 0 && (
+      {isPresentMode && totalSlides > 0 && (
         <div className="fixed top-0 left-0 right-0 h-1.5 z-50 bg-black/40 backdrop-blur-sm no-print">
           <div
             className="h-full transition-all duration-400 ease-out shadow-lg"
             style={{
-              width: `${((currentSlideIndex + 1) / totalCards) * 100}%`,
+              width: `${((currentSlideIndex + 1) / totalSlides) * 100}%`,
               backgroundImage: `linear-gradient(to right, rgb(var(--theme-primary)), rgb(var(--theme-secondary)), rgb(var(--theme-accent)))`,
               boxShadow: `0 0 16px rgba(var(--theme-primary), 0.9)`,
             }}
@@ -161,7 +161,7 @@ export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: 
               onClick={() => {
                 if (isPresentMode) {
                   // In presentation mode, clicking anywhere advances to the next slide
-                  if (currentSlideIndex < totalCards - 1) {
+                  if (currentSlideIndex < totalSlides - 1) {
                     scrollToSlide(currentSlideIndex + 1);
                   }
                 } else {
@@ -173,6 +173,63 @@ export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: 
             </SlideCard>
           </div>
         ))}
+
+        {/* Closing / Outro Slide */}
+        <div
+          className={
+            isPresentMode
+              ? "w-full h-screen flex items-center justify-center snap-center shrink-0 overflow-hidden"
+              : "w-full flex justify-center snap-center shrink-0"
+          }
+        >
+          <div
+            className={
+              isPresentMode
+                ? "w-full h-screen relative flex flex-col items-center justify-center text-center p-8 md:p-16 select-none"
+                : "w-full max-w-[1120px] aspect-video relative flex flex-col items-center justify-center text-center rounded-3xl p-10 md:p-14 backdrop-blur-3xl border shadow-2xl"
+            }
+            style={{
+              backgroundColor: `rgba(var(--theme-bg), 0.85)`,
+              backgroundImage: `linear-gradient(to bottom right, rgba(var(--theme-primary), 0.12), rgba(var(--theme-surface), 0.5), rgba(var(--theme-secondary), 0.08))`,
+              borderColor: `rgba(var(--theme-primary), 0.25)`,
+              boxShadow: `0 0 80px -15px rgba(var(--theme-primary), 0.2)`,
+            }}
+          >
+            {/* Dynamic ambient lights */}
+            <div
+              className="absolute -top-32 -right-32 w-80 h-80 rounded-full blur-[140px] pointer-events-none opacity-45 animate-pulse-glow"
+              style={{ backgroundColor: `rgb(var(--theme-secondary))` }}
+            />
+            <div
+              className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full blur-[140px] pointer-events-none opacity-35 animate-pulse-glow"
+              style={{ backgroundColor: `rgb(var(--theme-primary))` }}
+            />
+
+            <div className="relative z-10 flex flex-col items-center space-y-6 max-w-4xl mx-auto">
+              {/* A product of Robozonics */}
+              <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/[0.08] border border-white/20 backdrop-blur-2xl shadow-xl shadow-pink-500/15 transition-transform hover:scale-105">
+                <Sparkles className="w-5 h-5 text-pink-400 animate-pulse" />
+                <span className="text-sm md:text-base font-bold tracking-widest uppercase text-pink-300">
+                  A product of <span className="text-white font-black drop-shadow">Robozonics</span>
+                </span>
+              </div>
+
+              {/* Crafted & Developed by Rehan RS */}
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight leading-tight bg-gradient-to-r from-[#FF007A] via-[#A855F7] via-[#00F0FF] to-[#FF3366] bg-clip-text text-transparent drop-shadow-[0_0_50px_rgba(255,0,122,0.5)] transition-all duration-300 hover:scale-[1.02]">
+                Crafted &amp; Developed by Rehan RS
+              </h1>
+
+              {/* Powered by the Brain of Gemini */}
+              <div className="inline-flex items-center gap-3 px-7 py-3 rounded-2xl bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-cyan-500/20 border border-purple-500/40 backdrop-blur-2xl shadow-2xl shadow-purple-500/25">
+                <Brain className="w-6 h-6 text-cyan-400 animate-pulse" />
+                <span className="text-base md:text-xl font-semibold text-slate-200 tracking-wide flex items-center gap-2">
+                  Powered by the <span className="bg-gradient-to-r from-cyan-400 via-purple-300 to-pink-400 bg-clip-text text-transparent font-black">Brain of Gemini</span>
+                  <Zap className="w-5 h-5 text-amber-400 fill-amber-400 inline-block" />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Floating Presentation Controls (HUD) */}
@@ -189,12 +246,12 @@ export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: 
             </button>
 
             <span className="text-xs font-bold tracking-wider text-slate-200 px-3 min-w-[70px] text-center font-mono">
-              {currentSlideIndex + 1} / {totalCards}
+              {currentSlideIndex + 1} / {totalSlides}
             </span>
 
             <button
-              onClick={() => scrollToSlide(Math.min(totalCards - 1, currentSlideIndex + 1))}
-              disabled={currentSlideIndex >= totalCards - 1}
+              onClick={() => scrollToSlide(Math.min(totalSlides - 1, currentSlideIndex + 1))}
+              disabled={currentSlideIndex >= totalSlides - 1}
               className="p-1.5 rounded-full hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent text-white transition-colors"
               title="Next Slide (→ / Down / Space / Click)"
             >

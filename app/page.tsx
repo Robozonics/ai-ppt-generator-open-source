@@ -5,7 +5,7 @@ import { useDeckStore } from "@/lib/store";
 import { PresentationCanvas } from "@/components/viewer/PresentationCanvas";
 import { AIChatSidebar } from "@/components/editor/AIChatSidebar";
 import { GeneratingOverlay } from "@/components/editor/GeneratingOverlay";
-import { Loader2, Sparkles, Wand2, Layers, AlignLeft, Palette, Check, Download, FileText, Play } from "lucide-react";
+import { Loader2, Sparkles, Wand2, Layers, AlignLeft, Palette, Check, Download, FileText, Play, Brain, Zap } from "lucide-react";
 
 type Verbosity = "short" | "medium" | "detailed";
 
@@ -417,14 +417,29 @@ export default function LandingPage() {
           )}
         </div>
 
-        {/* Footer Credits */}
-        <div className="mt-16 text-center space-y-2 opacity-70 hover:opacity-100 transition-opacity">
-          <p className="text-sm text-slate-400 font-medium tracking-wide uppercase">
-            A product of <span className="text-pink-400 font-bold">Robozonics</span>
-          </p>
-          <p className="text-xs text-slate-500">
-            Crafted & Developed by <span className="text-indigo-400 font-semibold">Rehan RS</span>
-          </p>
+        {/* Gen Z Footer Credits */}
+        <div className="mt-20 pt-10 border-t border-white/10 text-center flex flex-col items-center space-y-4 relative z-20">
+          {/* A product of Robozonics */}
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.06] border border-white/15 backdrop-blur-xl shadow-lg shadow-pink-500/10 transition-transform hover:scale-105">
+            <Sparkles className="w-4 h-4 text-pink-400 animate-pulse" />
+            <span className="text-xs md:text-sm font-bold tracking-widest uppercase text-pink-300">
+              A product of <span className="text-white font-black drop-shadow">Robozonics</span>
+            </span>
+          </div>
+
+          {/* Crafted & Developed by Rehan RS */}
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight bg-gradient-to-r from-[#FF007A] via-[#A855F7] via-[#00F0FF] to-[#FF3366] bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,0,122,0.4)] transition-all duration-300 hover:scale-[1.02]">
+            Crafted &amp; Developed by Rehan RS
+          </h2>
+
+          {/* Powered by the Brain of Gemini */}
+          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-purple-500/15 via-indigo-500/15 to-cyan-500/15 border border-purple-500/30 backdrop-blur-xl shadow-lg shadow-purple-500/15">
+            <Brain className="w-5 h-5 text-cyan-400 animate-pulse" />
+            <span className="text-sm md:text-base font-semibold text-slate-200 tracking-wide flex items-center gap-1.5">
+              Powered by the <span className="bg-gradient-to-r from-cyan-400 via-purple-300 to-pink-400 bg-clip-text text-transparent font-extrabold">Brain of Gemini</span>
+              <Zap className="w-4 h-4 text-amber-400 fill-amber-400 inline-block" />
+            </span>
+          </div>
         </div>
 
       </div>
