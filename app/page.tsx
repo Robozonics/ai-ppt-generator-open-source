@@ -94,9 +94,6 @@ export default function LandingPage() {
     if (data.modifiedCard) {
       updateCard(activeCardId, data.modifiedCard);
     }
-    if (data.modifiedColorPalette) {
-      setDeck({ ...deck, colorPalette: data.modifiedColorPalette });
-    }
   };
 
   const handleExportPPTX = async () => {
@@ -232,7 +229,7 @@ export default function LandingPage() {
         )}
 
         <div className="flex-1 overflow-hidden relative">
-          <PresentationCanvas />
+          <PresentationCanvas isPresentMode={isPresentMode} />
         </div>
         
         {!isPresentMode && (

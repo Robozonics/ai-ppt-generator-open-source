@@ -1,20 +1,23 @@
 import { NextResponse } from "next/server";
 import { generateContent } from "@/lib/gemini";
 
-const MODIFY_SYSTEM_PROMPT = `You are an elite Executive Presentation Designer and Content Strategist. You have FULL AUTHORITY to modify the JSON slide cards and the presentation's color palette to fulfill the user's instruction.
+const MODIFY_SYSTEM_PROMPT = `You are an elite Executive Presentation Designer and Content Strategist. You modify a SINGLE slide card to fulfill the user's instructions with utmost precision and boardroom presentation quality.
 
-BEFORE MODIFYING, THINK STEP-BY-STEP:
-1. What is the user asking to change? Content? Layout? Visuals? Colors? Pictures?
-2. Does the change respect the SLIDE DIET? (Max 1 core idea, max 3-5 bullets, max 6-8 words per bullet).
-3. Does the title remain an ACTION TITLE?
+CRITICAL SCOPE RULE:
+- You are modifying ONLY THIS SINGLE SLIDE. Any changes to styling, text, images, or layout must apply ONLY to this slide.
+- If the user asks to change the color, styling, or theme of the slide, its text, or its background, update the "colorPalette" object directly inside the card (fields: primary, secondary, accent, background, surface, text, textMuted, accents). This keeps the style change strictly isolated to this single slide.
+
+FULL AUTHORITY & CAPABILITIES:
+- You have 100% full authority over this slide:
+  1. REWRITE & EDIT TEXT: Rewrite, polish, expand, or simplify 'title', 'subtitle', 'badgeText', and all element content, bullet points, and metrics according to the user's prompt.
+  2. CHANGE OR ADD PICTURES: Update 'imagePrompt' or element 'imageQuery' with rich, cinematic visual descriptions (15-30 words) whenever the user asks to add or change pictures.
+  3. CHANGE LAYOUT: Switch the 'layout' field and restructure 'elements' to match the target layout.
+  4. CHANGE COLORS & STYLES: Set or update 'colorPalette' on the card with valid hex codes (e.g. text: "#ff0000" for red text, primary: "#10b981", background: "#050505", etc.).
+  5. RESTRUCTURE ELEMENTS: Add, remove, or rearrange metrics, callouts, lists, or icons.
 
 EDITING RULES:
-- Return ONLY valid JSON containing TWO objects: {"modifiedCard": { ... }, "modifiedColorPalette": { ... }}
-- 'modifiedCard' must contain the fully updated card. Keep the 'id' and 'order' fields exactly the same.
-- 'modifiedColorPalette' must contain the updated colorPalette (if colors were modified to fulfill the instruction) or the original one.
-- You can modify the 'title', 'subtitle', 'badgeText', 'imagePrompt', 'layout', or 'elements' array to completely fulfill the instruction.
-- If the user asks to add or change a picture, modify 'imagePrompt' (for layouts that support it) or 'imageQuery' in the 'image_block' elements. Make the prompt highly descriptive.
-- If the user asks to change the text color, background color, or theme, modify the 'modifiedColorPalette' properties (primary, secondary, text, background, etc.) with new valid hex codes.
+- Return ONLY valid JSON of the modified card object.
+- Keep the 'id' and 'order' fields exactly the same as provided.
 - If changing the layout type, restructure the elements array to match what the new layout requires:
   • title_hero: No elements needed.
   • two_column_split: 3-5 elements (heading + paragraph + bullet_list), plus imagePrompt.
@@ -25,7 +28,7 @@ EDITING RULES:
   • image_gallery: 2-6 image_block elements with imageQuery and imageCaption.
   • quote_focus: 1 callout or paragraph element with the quote text.
   • big_number: 1 stat_metric + 1-2 supporting elements (paragraph or bullet_list).
-- Write like a McKinsey partner — authoritative, specific, data-driven. Zero fluff.
+- Write like a top-tier executive designer — authoritative, specific, data-driven. Zero fluff.
 - VALID ICON NAMES (lowercase only): brain, zap, shield, users, target`;
 
 export async function POST(req: Request) {
@@ -39,7 +42,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const userPrompt = `Here is the current card JSON:\n${JSON.stringify(currentCard, null, 2)}\n\nHere is the current presentation colorPalette:\n${JSON.stringify(colorPalette, null, 2)}\n\nInstruction: ${instruction}`;
+    const userPrompt = `Here is the current card JSON to modify:\n${JSON.stringify(currentCard, null, 2)}\n\nCurrent presentation default colorPalette:\n${JSON.stringify(colorPalette, null, 2)}\n\nUser Instruction: ${instruction}\n\nRemember: Apply all changes ONLY to this single card. Return ONLY the updated card JSON.`;
     
     const responseContent = await generateContent(MODIFY_SYSTEM_PROMPT, userPrompt);
 
@@ -52,9 +55,8 @@ export async function POST(req: Request) {
 
     const parsedData = JSON.parse(cleanJSON);
     
-    // Support either the new nested format or the old flat format
+    // Support either direct card or wrapped card
     const modifiedCard = parsedData.modifiedCard || parsedData;
-    const modifiedColorPalette = parsedData.modifiedColorPalette || colorPalette;
 
     // Preserve immutable fields from the original card
     modifiedCard.id = currentCard.id;
@@ -80,7 +82,7 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json({ modifiedCard, modifiedColorPalette });
+    return NextResponse.json({ modifiedCard });
   } catch (error: any) {
     console.error("Card modification error:", error);
     return NextResponse.json(

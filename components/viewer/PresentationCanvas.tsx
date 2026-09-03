@@ -29,8 +29,45 @@ function renderLayout(card: any, index: number) {
   }
 }
 
-export function PresentationCanvas() {
+import { useState, useEffect, useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: boolean }) {
   const { deck, activeCardId, setActiveCard } = useDeckStore();
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const totalCards = deck?.cards?.length || 0;
+
+  // Track active slide based on scroll position in presentation mode
+  useEffect(() => {
+    const handleScroll = () => {
+      const container = document.querySelector(".presentation-track");
+      if (!container || totalCards === 0) return;
+
+      const scrollTop = container.scrollTop;
+      const cardHeight = window.innerHeight;
+      const index = Math.round(scrollTop / cardHeight);
+      setCurrentSlideIndex(Math.min(Math.max(0, index), totalCards - 1));
+    };
+
+    const container = document.querySelector(".presentation-track");
+    if (container) {
+      container.addEventListener("scroll", handleScroll, { passive: true });
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [totalCards]);
+
+  const scrollToSlide = (index: number) => {
+    const container = document.querySelector(".presentation-track");
+    if (!container) return;
+    const targetY = index * window.innerHeight;
+    container.scrollTo({ top: targetY, behavior: "smooth" });
+  };
 
   if (!deck) {
     return (
@@ -43,38 +80,102 @@ export function PresentationCanvas() {
   return (
     <ThemeProvider
       palette={deck.colorPalette}
-      className="h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth flex flex-col items-center gap-24 py-24 relative presentation-track"
+      className={`h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth flex flex-col items-center relative presentation-track ${
+        isPresentMode ? "py-0 gap-0" : "py-20 gap-20"
+      }`}
     >
-      {/* Dynamic background based on the palette */}
+      {/* Top Animated Progress Bar in Presentation Mode */}
+      {isPresentMode && totalCards > 0 && (
+        <div className="fixed top-0 left-0 right-0 h-1.5 z-50 bg-black/40 backdrop-blur-sm no-print">
+          <div
+            className="h-full transition-all duration-400 ease-out shadow-lg"
+            style={{
+              width: `${((currentSlideIndex + 1) / totalCards) * 100}%`,
+              backgroundImage: `linear-gradient(to right, rgb(var(--theme-primary)), rgb(var(--theme-secondary)), rgb(var(--theme-accent)))`,
+              boxShadow: `0 0 12px rgba(var(--theme-primary), 0.8)`,
+            }}
+          />
+        </div>
+      )}
+
+      {/* Dynamic Background Surface */}
       <div
         className="fixed inset-0 -z-10"
         style={{ backgroundColor: `rgb(var(--theme-bg))` }}
       />
-      
-      {/* Ambient background glow — uses theme colors */}
+
+      {/* Dynamic Ambient Background Lights with Subtle Fluid Movement */}
       <div
-        className="fixed top-[20%] left-[15%] w-[35%] h-[35%] rounded-full blur-[150px] pointer-events-none -z-5"
-        style={{ backgroundColor: `rgba(var(--theme-primary), 0.08)` }}
+        className="fixed top-[-10%] left-[-5%] w-[45vw] h-[45vw] rounded-full blur-[140px] pointer-events-none -z-5 opacity-40 animate-pulse-glow"
+        style={{ backgroundColor: `rgb(var(--theme-primary))` }}
       />
       <div
-        className="fixed bottom-[15%] right-[10%] w-[30%] h-[30%] rounded-full blur-[120px] pointer-events-none -z-5"
-        style={{ backgroundColor: `rgba(var(--theme-secondary), 0.06)` }}
+        className="fixed bottom-[-10%] right-[-5%] w-[40vw] h-[40vw] rounded-full blur-[140px] pointer-events-none -z-5 opacity-30 animate-pulse-glow"
+        style={{
+          backgroundColor: `rgb(var(--theme-secondary))`,
+          animationDelay: "1.5s",
+        }}
+      />
+      <div
+        className="fixed top-[40%] right-[20%] w-[25vw] h-[25vw] rounded-full blur-[120px] pointer-events-none -z-5 opacity-20 animate-float"
+        style={{ backgroundColor: `rgb(var(--theme-accent))` }}
       />
 
-      {/* Slide Cards */}
-      <div className="z-10 flex flex-col items-center gap-24 w-full px-6">
+      {/* Slide Cards Container */}
+      <div
+        className={`z-10 flex flex-col items-center w-full px-4 md:px-8 ${
+          isPresentMode ? "gap-0" : "gap-20"
+        }`}
+      >
         {deck.cards.map((card, index) => (
-          <SlideCard
+          <div
             key={card.id || index}
-            card={card}
-            theme={deck.theme}
-            isActive={activeCardId === card.id}
-            onClick={() => setActiveCard(activeCardId === card.id ? null : card.id)}
+            className={
+              isPresentMode
+                ? "w-full h-screen flex items-center justify-center snap-center shrink-0"
+                : "w-full flex justify-center snap-center shrink-0"
+            }
           >
-            {renderLayout(card, index)}
-          </SlideCard>
+            <SlideCard
+              card={card}
+              theme={deck.theme}
+              isActive={activeCardId === card.id}
+              onClick={() => setActiveCard(activeCardId === card.id ? null : card.id)}
+            >
+              {renderLayout(card, index)}
+            </SlideCard>
+          </div>
         ))}
       </div>
+
+      {/* Floating Presentation Controls (HUD) */}
+      {isPresentMode && (
+        <div className="fixed bottom-6 inset-x-0 flex justify-center items-center pointer-events-none z-50 no-print">
+          <div className="pointer-events-auto flex items-center gap-3 bg-black/60 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-full shadow-2xl transition-all duration-300 hover:bg-black/80 hover:border-white/20">
+            <button
+              onClick={() => scrollToSlide(Math.max(0, currentSlideIndex - 1))}
+              disabled={currentSlideIndex === 0}
+              className="p-1.5 rounded-full hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent text-white transition-colors"
+              title="Previous Slide (← / Up)"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            <span className="text-xs font-semibold tracking-wider text-slate-300 px-2 min-w-[70px] text-center font-mono">
+              {currentSlideIndex + 1} / {totalCards}
+            </span>
+
+            <button
+              onClick={() => scrollToSlide(Math.min(totalCards - 1, currentSlideIndex + 1))}
+              disabled={currentSlideIndex >= totalCards - 1}
+              className="p-1.5 rounded-full hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent text-white transition-colors"
+              title="Next Slide (→ / Down / Space)"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
     </ThemeProvider>
   );
 }
