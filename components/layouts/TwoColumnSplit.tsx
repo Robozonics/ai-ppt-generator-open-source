@@ -96,8 +96,8 @@ export function TwoColumnSplit({ card }: { card?: Card }) {
             alt="Slide visual"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             onError={(e) => {
-              // Graceful fallback to Unsplash deep tech visual instead of hiding
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1280&h=720&q=80';
+              // Graceful fallback to deep tech visual instead of hiding
+              (e.target as HTMLImageElement).src = 'https://loremflickr.com/1280/720/technology?lock=1';
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />

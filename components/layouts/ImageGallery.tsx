@@ -53,7 +53,7 @@ export function ImageGallery({ card }: { card: Card }) {
                 alt={img.imageCaption || "Gallery image"}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1280&h=720&q=80';
+                  (e.target as HTMLImageElement).src = 'https://loremflickr.com/1280/720/architecture?lock=1';
                 }}
               />
               
