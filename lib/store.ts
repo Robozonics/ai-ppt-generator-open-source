@@ -1,16 +1,21 @@
 import { create } from "zustand";
 import { PresentationDeck, Card } from "./schema";
+import { THEME_PRESETS } from "./themes";
 
 interface DeckState {
   deck: PresentationDeck | null;
   activeCardIndex: number;
   activeCardId: string | null;
   isLoading: boolean;
+  animationsEnabled: boolean;
 
   setDeck: (deck: PresentationDeck) => void;
   setActiveCardIndex: (index: number) => void;
   setActiveCard: (id: string | null) => void;
   setIsLoading: (isLoading: boolean) => void;
+  toggleAnimations: () => void;
+  setAnimationsEnabled: (enabled: boolean) => void;
+  changeTheme: (themeKey: string) => void;
 
   updateCard: (id: string, newCardData: Partial<Card>) => void;
   deleteCard: (index: number) => void;
@@ -21,6 +26,7 @@ export const useDeckStore = create<DeckState>((set) => ({
   activeCardIndex: 0,
   activeCardId: null,
   isLoading: false,
+  animationsEnabled: true,
 
   setDeck: (deck) => set({ deck, activeCardIndex: 0, activeCardId: null }),
 
@@ -29,6 +35,24 @@ export const useDeckStore = create<DeckState>((set) => ({
   setActiveCard: (id) => set({ activeCardId: id }),
 
   setIsLoading: (isLoading) => set({ isLoading }),
+
+  toggleAnimations: () => set((state) => ({ animationsEnabled: !state.animationsEnabled })),
+
+  setAnimationsEnabled: (enabled) => set({ animationsEnabled: enabled }),
+
+  changeTheme: (themeKey) =>
+    set((state) => {
+      if (!state.deck) return state;
+      const preset = THEME_PRESETS[themeKey];
+      const newPalette = preset ? preset.palette : state.deck.colorPalette;
+      return {
+        deck: {
+          ...state.deck,
+          theme: themeKey as any,
+          colorPalette: newPalette,
+        },
+      };
+    }),
 
   updateCard: (id, newCardData) =>
     set((state) => {

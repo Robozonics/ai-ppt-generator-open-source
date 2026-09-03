@@ -1,6 +1,7 @@
 import { Card } from "@/lib/schema";
 import { motion } from "framer-motion";
 import { paletteToCssVars } from "./ThemeProvider";
+import { useDeckStore } from "@/lib/store";
 
 interface SlideCardProps {
   card: Card;
@@ -12,16 +13,17 @@ interface SlideCardProps {
 }
 
 export function SlideCard({ card, theme, isActive, isPresentMode = false, onClick, children }: SlideCardProps) {
+  const animationsEnabled = useDeckStore((s) => s.animationsEnabled);
   // If this particular card has its own custom colorPalette override, apply it locally!
   const localPaletteVars = card.colorPalette ? paletteToCssVars(card.colorPalette) : {};
 
   if (isPresentMode) {
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.97 }}
+        initial={animationsEnabled ? { opacity: 0, scale: 0.97 } : false}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 1.02 }}
-        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        exit={animationsEnabled ? { opacity: 0, scale: 1.02 } : undefined}
+        transition={animationsEnabled ? { duration: 0.45, ease: [0.16, 1, 0.3, 1] } : { duration: 0 }}
         className="w-full h-screen max-w-none relative flex flex-col justify-center overflow-hidden p-8 md:p-16 lg:p-24 select-none"
         style={{
           ...localPaletteVars,
@@ -30,11 +32,15 @@ export function SlideCard({ card, theme, isActive, isPresentMode = false, onClic
       >
         {/* Dynamic ambient lights spanning entire screen */}
         <div
-          className="absolute -top-40 -right-40 w-[55vw] h-[55vw] rounded-full blur-[140px] pointer-events-none opacity-30 animate-pulse-glow"
+          className={`absolute -top-40 -right-40 w-[55vw] h-[55vw] rounded-full blur-[140px] pointer-events-none opacity-30 ${
+            animationsEnabled ? "animate-pulse-glow" : ""
+          }`}
           style={{ backgroundColor: `rgb(var(--theme-secondary))` }}
         />
         <div
-          className="absolute -bottom-40 -left-40 w-[55vw] h-[55vw] rounded-full blur-[140px] pointer-events-none opacity-25 animate-pulse-glow"
+          className={`absolute -bottom-40 -left-40 w-[55vw] h-[55vw] rounded-full blur-[140px] pointer-events-none opacity-25 ${
+            animationsEnabled ? "animate-pulse-glow" : ""
+          }`}
           style={{ backgroundColor: `rgb(var(--theme-primary))` }}
         />
 
@@ -63,10 +69,10 @@ export function SlideCard({ card, theme, isActive, isPresentMode = false, onClic
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={animationsEnabled ? { opacity: 0, y: 40, scale: 0.96 } : false}
+      whileInView={animationsEnabled ? { opacity: 1, y: 0, scale: 1 } : undefined}
       viewport={{ once: false, margin: "-80px" }}
-      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      transition={animationsEnabled ? { duration: 0.55, ease: [0.16, 1, 0.3, 1] } : { duration: 0 }}
       onClick={onClick}
       className={[
         "slide-card-wrapper", // Used by globals.css print queries
@@ -74,7 +80,7 @@ export function SlideCard({ card, theme, isActive, isPresentMode = false, onClic
         "rounded-3xl p-10 md:p-14",
         "backdrop-blur-3xl",
         "snap-center shrink-0",
-        "transition-all duration-500 cursor-pointer group",
+        animationsEnabled ? "transition-all duration-500 cursor-pointer group" : "cursor-pointer group",
         isActive
           ? "ring-2 ring-offset-4 ring-offset-[#0b0f19]"
           : "hover:scale-[1.01] hover:shadow-2xl",

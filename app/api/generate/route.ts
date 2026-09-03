@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { generateContent } from "@/lib/gemini";
 import { resolveImageUrl, resolveWebImage } from "@/lib/imageResolver";
 import { PresentationDeckSchema } from "@/lib/schema";
+import { THEME_PRESETS } from "@/lib/themes";
 
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
@@ -267,6 +268,14 @@ export async function POST(req: Request) {
 
         return card;
       });
+    }
+
+    // Apply curated Gen Z theme preset if explicitly selected
+    if (theme && theme !== "nebula_dark" && THEME_PRESETS[theme]) {
+      deck.theme = theme;
+      deck.colorPalette = THEME_PRESETS[theme].palette;
+    } else if (!deck.colorPalette && THEME_PRESETS[theme]) {
+      deck.colorPalette = THEME_PRESETS[theme].palette;
     }
 
     // ── Optional: Validate against Zod (soft — log but don't block) ──────

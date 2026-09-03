@@ -2,21 +2,9 @@
 
 import { ColorPalette } from "@/lib/schema";
 import { useMemo } from "react";
+import { THEME_PRESETS, DEFAULT_PALETTE } from "@/lib/themes";
 
-/**
- * Default palette used when the AI doesn't provide one.
- * Matches the original nebula_dark indigo/purple aesthetic.
- */
-const DEFAULT_PALETTE: ColorPalette = {
-  primary: "#6366f1",
-  secondary: "#ec4899",
-  accent: "#10b981",
-  background: "#0b0f19",
-  surface: "#1a1a2e",
-  text: "#f8fafc",
-  textMuted: "#94a3b8",
-  accents: ["#6366f1", "#10b981", "#f43e5e", "#f59e0b"],
-};
+export { THEME_PRESETS, DEFAULT_PALETTE };
 
 /**
  * Convert a hex color like "#6366f1" to an "R, G, B" string like "99, 102, 241"
@@ -77,5 +65,3 @@ export function ThemeProvider({ palette, children, className }: ThemeProviderPro
     </div>
   );
 }
-
-export { DEFAULT_PALETTE };

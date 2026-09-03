@@ -18,7 +18,7 @@ export default function LandingPage() {
   const [isPresentMode, setIsPresentMode] = useState(false);
   const [isExportingPPTX, setIsExportingPPTX] = useState(false);
   
-  const { deck, setDeck, isLoading, setIsLoading, activeCardId, updateCard, setActiveCard } = useDeckStore();
+  const { deck, setDeck, isLoading, setIsLoading, activeCardId, updateCard, setActiveCard, animationsEnabled, toggleAnimations, changeTheme } = useDeckStore();
   const [error, setError] = useState("");
   const [isEnhancing, setIsEnhancing] = useState(false);
 
@@ -191,9 +191,43 @@ export default function LandingPage() {
             </div>
 
             <div className="flex items-center gap-3">
+              {/* Theme Live Switcher */}
+              <div className="flex items-center gap-1.5 bg-slate-800/90 border border-white/10 rounded-lg px-2.5 py-1.5">
+                <Palette className="w-3.5 h-3.5 text-pink-400" />
+                <select
+                  value={deck.theme || "nebula_dark"}
+                  onChange={(e) => changeTheme(e.target.value)}
+                  className="bg-transparent text-xs font-semibold text-slate-200 outline-none cursor-pointer"
+                  title="Switch Visual Theme"
+                >
+                  <option value="nebula_dark" className="bg-slate-900">🎨 Nebula Cyber</option>
+                  <option value="neon_tokyo" className="bg-slate-900">⚡ Neon Tokyo</option>
+                  <option value="hyper_sunset" className="bg-slate-900">🌅 Hyper Sunset</option>
+                  <option value="acid_matrix" className="bg-slate-900">🧪 Acid Matrix</option>
+                  <option value="y2k_vaporwave" className="bg-slate-900">📼 Y2K Vaporwave</option>
+                  <option value="aurora_glass" className="bg-slate-900">🌌 Aurora Dream</option>
+                  <option value="stealth_mono" className="bg-slate-900">🖤 Stealth Carbon</option>
+                  <option value="liquid_chrome" className="bg-slate-900">💿 Liquid Chrome</option>
+                </select>
+              </div>
+
+              {/* Animation Motion Toggle */}
+              <button
+                onClick={toggleAnimations}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  animationsEnabled
+                    ? "bg-cyan-500/15 border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/25"
+                    : "bg-slate-800 border-white/10 text-slate-400 hover:text-white"
+                }`}
+                title={animationsEnabled ? "Animations: ON (Click to turn OFF)" : "Animations: OFF (Click to turn ON)"}
+              >
+                <Zap className={`w-3.5 h-3.5 ${animationsEnabled ? "text-cyan-400 fill-cyan-400" : "text-slate-500"}`} />
+                <span>{animationsEnabled ? "Motion ON" : "Motion OFF"}</span>
+              </button>
+
               <button
                 onClick={() => window.print()}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors"
               >
                 <FileText className="w-4 h-4" />
                 Export PDF
@@ -202,7 +236,7 @@ export default function LandingPage() {
               <button
                 onClick={handleExportPPTX}
                 disabled={isExportingPPTX}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
               >
                 {isExportingPPTX ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                 Export PPTX
@@ -210,7 +244,7 @@ export default function LandingPage() {
 
               <button
                 onClick={togglePresentMode}
-                className="flex items-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-bold transition-colors shadow-lg shadow-indigo-500/20 ml-2"
+                className="flex items-center gap-2 px-5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-bold transition-colors shadow-lg shadow-indigo-500/20 ml-1"
               >
                 <Play className="w-4 h-4" />
                 Present
@@ -356,10 +390,15 @@ export default function LandingPage() {
                     onChange={(e) => setTheme(e.target.value)}
                     className="w-full appearance-none bg-black/40 border border-white/5 rounded-xl outline-none text-sm px-4 py-3 text-white focus:ring-1 focus:ring-purple-500/50 transition-all shadow-inner cursor-pointer"
                   >
-                    <option value="nebula_dark">🎨 AI Auto (Recommended)</option>
-                    <option value="cyber_obsidian">Cyber Obsidian</option>
-                    <option value="aurora_glass">Aurora Glass</option>
-                    <option value="minimal_light">Minimal Light</option>
+                    <option value="nebula_dark">🎨 AI Auto Choose (Recommended)</option>
+                    <option value="neon_tokyo">⚡ Neon Tokyo 2077 (Cyberpunk)</option>
+                    <option value="hyper_sunset">🌅 Hyper Sunset (Velvet &amp; Coral)</option>
+                    <option value="acid_matrix">🧪 Acid Matrix Hype (Toxic Lime &amp; Aqua)</option>
+                    <option value="y2k_vaporwave">📼 Y2K Vaporwave (Pastel Bubblegum)</option>
+                    <option value="aurora_glass">🌌 Aurora Dream (Nordic Teal &amp; Crystal)</option>
+                    <option value="stealth_mono">🖤 Stealth Carbon (Luxury Platinum)</option>
+                    <option value="liquid_chrome">💿 Liquid Chrome (Holographic Silver)</option>
+                    <option value="cyber_obsidian">🔮 Cyber Obsidian (Obsidian &amp; Violet)</option>
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                     <Check className="w-4 h-4 text-purple-400 opacity-50" />
@@ -389,11 +428,26 @@ export default function LandingPage() {
 
             </div>
 
-            <div className="pt-4 flex justify-center">
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/5">
+              {/* Animation Toggle on Landing Page */}
+              <button
+                type="button"
+                onClick={toggleAnimations}
+                className={`px-4 py-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-2 ${
+                  animationsEnabled
+                    ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20"
+                    : "bg-black/30 border-white/10 text-slate-400 hover:text-white"
+                }`}
+                title="Toggle slide transition and fluid ambient animations"
+              >
+                <Zap className={`w-4 h-4 ${animationsEnabled ? "text-cyan-400 fill-cyan-400 animate-pulse" : "text-slate-500"}`} />
+                <span>{animationsEnabled ? "Animations: ON" : "Animations: OFF"}</span>
+              </button>
+
               <button
                 onClick={handleGenerate}
                 disabled={isLoading || !prompt.trim()}
-                className="w-full md:w-auto min-w-[240px] justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:via-purple-400 hover:to-pink-400 disabled:opacity-50 disabled:grayscale text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-pink-500/25"
+                className="w-full sm:w-auto min-w-[240px] justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:via-purple-400 hover:to-pink-400 disabled:opacity-50 disabled:grayscale text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-pink-500/25"
               >
                 {isLoading ? (
                   <>

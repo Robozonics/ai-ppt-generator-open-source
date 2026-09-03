@@ -1,0 +1,162 @@
+import { ColorPalette } from "./schema";
+
+/**
+ * 8 Ultra-Trendy Gen Z Presentation Themes + Cyber Presets
+ */
+export const THEME_PRESETS: Record<
+  string,
+  { name: string; description: string; emoji: string; palette: ColorPalette }
+> = {
+  nebula_dark: {
+    name: "Nebula Cyber (AI Auto)",
+    description: "Deep cosmos indigo with vivid neon magenta & cyber emerald",
+    emoji: "🎨",
+    palette: {
+      primary: "#6366f1",
+      secondary: "#ec4899",
+      accent: "#10b981",
+      background: "#0b0f19",
+      surface: "#1a1a2e",
+      text: "#f8fafc",
+      textMuted: "#94a3b8",
+      accents: ["#6366f1", "#10b981", "#ec4899", "#f59e0b"],
+    },
+  },
+  neon_tokyo: {
+    name: "Neon Tokyo 2077",
+    description: "Cyberpunk high-contrast hot magenta, laser cyan & toxic lime",
+    emoji: "⚡",
+    palette: {
+      primary: "#ff007a",
+      secondary: "#00f0ff",
+      accent: "#39ff14",
+      background: "#06070b",
+      surface: "#12131d",
+      text: "#ffffff",
+      textMuted: "#a1a1aa",
+      accents: ["#ff007a", "#00f0ff", "#39ff14", "#ffe600"],
+    },
+  },
+  hyper_sunset: {
+    name: "Hyper Sunset",
+    description: "Warm velvet dusk with radiant neon coral & purple glow",
+    emoji: "🌅",
+    palette: {
+      primary: "#ff5e3a",
+      secondary: "#9b00e8",
+      accent: "#ffd700",
+      background: "#0d0818",
+      surface: "#1c1230",
+      text: "#fff5f5",
+      textMuted: "#b8a9c9",
+      accents: ["#ff5e3a", "#9b00e8", "#ff9900", "#ff007a"],
+    },
+  },
+  acid_matrix: {
+    name: "Acid Matrix Hype",
+    description: "Radioactive toxic green, acid lime & laser aqua over pitch black",
+    emoji: "🧪",
+    palette: {
+      primary: "#00ff66",
+      secondary: "#00e5ff",
+      accent: "#ccff00",
+      background: "#070a08",
+      surface: "#0f1712",
+      text: "#f0fff4",
+      textMuted: "#86efac",
+      accents: ["#00ff66", "#ccff00", "#00e5ff", "#ffffff"],
+    },
+  },
+  y2k_vaporwave: {
+    name: "Y2K Vaporwave",
+    description: "Bubblegum lilac pink, bright turquoise & retro pastel aesthetics",
+    emoji: "📼",
+    palette: {
+      primary: "#ff71ce",
+      secondary: "#01cdfe",
+      accent: "#05ffa1",
+      background: "#110626",
+      surface: "#1f0e3d",
+      text: "#ffffff",
+      textMuted: "#d8b4fe",
+      accents: ["#ff71ce", "#01cdfe", "#05ffa1", "#fffb96"],
+    },
+  },
+  aurora_glass: {
+    name: "Aurora Dream",
+    description: "Nordic ethereal teal, mystic amethyst & crystalline ice",
+    emoji: "🌌",
+    palette: {
+      primary: "#2dd4bf",
+      secondary: "#c084fc",
+      accent: "#38bdf8",
+      background: "#05131a",
+      surface: "#0c222e",
+      text: "#f0fdfa",
+      textMuted: "#99f6e4",
+      accents: ["#2dd4bf", "#c084fc", "#38bdf8", "#f472b6"],
+    },
+  },
+  stealth_mono: {
+    name: "Stealth Carbon",
+    description: "Luxury monochrome platinum, graphite titanium & cobalt highlight",
+    emoji: "🖤",
+    palette: {
+      primary: "#ffffff",
+      secondary: "#38bdf8",
+      accent: "#a1a1aa",
+      background: "#08080a",
+      surface: "#141418",
+      text: "#fafafa",
+      textMuted: "#71717a",
+      accents: ["#ffffff", "#38bdf8", "#a1a1aa", "#6366f1"],
+    },
+  },
+  liquid_chrome: {
+    name: "Liquid Chrome",
+    description: "Iridescent holographic silver, liquid blue & futuristic violet",
+    emoji: "💿",
+    palette: {
+      primary: "#60a5fa",
+      secondary: "#a78bfa",
+      accent: "#f472b6",
+      background: "#0a0e17",
+      surface: "#141d2e",
+      text: "#f8fafc",
+      textMuted: "#94a3b8",
+      accents: ["#60a5fa", "#a78bfa", "#f472b6", "#22d3ee"],
+    },
+  },
+  cyber_obsidian: {
+    name: "Cyber Obsidian",
+    description: "Pitch black obsidian with laser violet",
+    emoji: "🔮",
+    palette: {
+      primary: "#a855f7",
+      secondary: "#06b6d4",
+      accent: "#f43f5e",
+      background: "#050508",
+      surface: "#101018",
+      text: "#ffffff",
+      textMuted: "#9ca3af",
+      accents: ["#a855f7", "#06b6d4", "#f43f5e", "#eab308"],
+    },
+  },
+  minimal_light: {
+    name: "Minimal Light",
+    description: "Clean crisp studio daylight aesthetic",
+    emoji: "☀️",
+    palette: {
+      primary: "#2563eb",
+      secondary: "#7c3aed",
+      accent: "#059669",
+      background: "#f8fafc",
+      surface: "#ffffff",
+      text: "#0f172a",
+      textMuted: "#64748b",
+      accents: ["#2563eb", "#7c3aed", "#059669", "#d97706"],
+    },
+  },
+};
+
+export const DEFAULT_PALETTE = THEME_PRESETS.nebula_dark.palette;

@@ -35,7 +35,7 @@ import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Maximize2, Minimize2, X, Sparkles, Brain, Zap } from "lucide-react";
 
 export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: boolean }) {
-  const { deck, activeCardId, setActiveCard } = useDeckStore();
+  const { deck, activeCardId, setActiveCard, animationsEnabled, toggleAnimations } = useDeckStore();
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -106,7 +106,7 @@ export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: 
       {isPresentMode && totalCards > 0 && (
         <div className="fixed top-0 left-0 right-0 h-1.5 z-50 bg-black/40 backdrop-blur-sm no-print">
           <div
-            className="h-full transition-all duration-400 ease-out shadow-lg"
+            className={`h-full ${animationsEnabled ? "transition-all duration-400 ease-out" : ""} shadow-lg`}
             style={{
               width: `${((currentSlideIndex + 1) / totalCards) * 100}%`,
               backgroundImage: `linear-gradient(to right, rgb(var(--theme-primary)), rgb(var(--theme-secondary)), rgb(var(--theme-accent)))`,
@@ -122,20 +122,26 @@ export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: 
         style={{ backgroundColor: `rgb(var(--theme-bg))` }}
       />
 
-      {/* Dynamic Ambient Background Lights with Subtle Fluid Movement */}
+      {/* Dynamic Ambient Background Lights */}
       <div
-        className="fixed top-[-10%] left-[-5%] w-[45vw] h-[45vw] rounded-full blur-[140px] pointer-events-none -z-5 opacity-40 animate-pulse-glow"
+        className={`fixed top-[-10%] left-[-5%] w-[45vw] h-[45vw] rounded-full blur-[140px] pointer-events-none -z-5 opacity-40 ${
+          animationsEnabled ? "animate-pulse-glow" : ""
+        }`}
         style={{ backgroundColor: `rgb(var(--theme-primary))` }}
       />
       <div
-        className="fixed bottom-[-10%] right-[-5%] w-[40vw] h-[40vw] rounded-full blur-[140px] pointer-events-none -z-5 opacity-30 animate-pulse-glow"
+        className={`fixed bottom-[-10%] right-[-5%] w-[40vw] h-[40vw] rounded-full blur-[140px] pointer-events-none -z-5 opacity-30 ${
+          animationsEnabled ? "animate-pulse-glow" : ""
+        }`}
         style={{
           backgroundColor: `rgb(var(--theme-secondary))`,
           animationDelay: "1.5s",
         }}
       />
       <div
-        className="fixed top-[40%] right-[20%] w-[25vw] h-[25vw] rounded-full blur-[120px] pointer-events-none -z-5 opacity-20 animate-float"
+        className={`fixed top-[40%] right-[20%] w-[25vw] h-[25vw] rounded-full blur-[120px] pointer-events-none -z-5 opacity-20 ${
+          animationsEnabled ? "animate-float" : ""
+        }`}
         style={{ backgroundColor: `rgb(var(--theme-accent))` }}
       />
 
@@ -224,6 +230,22 @@ export function PresentationCanvas({ isPresentMode = false }: { isPresentMode?: 
               title="Next Slide (→ / Down / Space / Click)"
             >
               <ChevronRight className="w-5 h-5" />
+            </button>
+
+            <div className="w-px h-4 bg-white/20 mx-1" />
+
+            {/* Animation Toggle Button */}
+            <button
+              onClick={toggleAnimations}
+              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+                animationsEnabled
+                  ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/30"
+                  : "bg-white/5 text-slate-400 border border-white/10 hover:text-white"
+              }`}
+              title={animationsEnabled ? "Animations: ON (Click to turn OFF)" : "Animations: OFF (Click to turn ON)"}
+            >
+              <Zap className={`w-3.5 h-3.5 ${animationsEnabled ? "text-cyan-400 fill-cyan-400 animate-pulse" : "text-slate-500"}`} />
+              <span className="hidden sm:inline">{animationsEnabled ? "Motion ON" : "Motion OFF"}</span>
             </button>
 
             <div className="w-px h-4 bg-white/20 mx-1" />
