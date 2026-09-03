@@ -114,6 +114,7 @@ export async function generateContent(
     } catch (err: any) {
       lastError = err;
       const isRetryable =
+        err instanceof SyntaxError ||
         err?.status === 429 ||
         err?.status === 403 ||
         err?.status === 503 ||
