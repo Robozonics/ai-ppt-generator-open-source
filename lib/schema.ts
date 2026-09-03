@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const ElementSchema = z.object({
   id: z.string(),
-  type: z.enum(["heading", "paragraph", "bullet_list", "stat_metric", "callout", "image_block"]),
+  type: z.enum(["heading", "paragraph", "bullet_list", "stat_metric", "callout", "image_block", "chart"]),
   content: z.string().optional(),
   items: z.array(z.string()).optional(),
   metricValue: z.string().optional(),
@@ -11,7 +11,13 @@ export const ElementSchema = z.object({
   imageQuery: z.string().optional(),
   imageCaption: z.string().optional(),
   imageUrl: z.string().optional(),
-  title: z.string().optional()
+  title: z.string().optional(),
+  chartType: z.enum(["bar", "line", "donut", "area"]).optional(),
+  chartData: z.array(z.object({
+    label: z.string(),
+    value: z.number(),
+    color: z.string().optional()
+  })).optional()
 });
 
 export const CardLayoutEnum = z.enum([
@@ -23,7 +29,8 @@ export const CardLayoutEnum = z.enum([
   "comparison_matrix",
   "image_gallery",
   "quote_focus",
-  "big_number"
+  "big_number",
+  "data_chart"
 ]);
 
 export const ColorPaletteSchema = z.object({

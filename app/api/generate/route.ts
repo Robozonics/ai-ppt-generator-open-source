@@ -22,23 +22,25 @@ OUTPUT FORMAT (return ONLY this JSON, nothing else):
 {"outline":[{"slideNumber":1,"layout":"title_hero","proposedTitle":"...","contentNote":"..."}]}
 
 AVAILABLE LAYOUTS:
-- title_hero: Grand opening slide. Bold, cinematic title.
+- title_hero: Grand opening or closing slide. Bold, cinematic title.
 - two_column_split: Left text, right image.
 - three_column_grid: Three equal cards with icons.
 - timeline_flow: Horizontal timeline.
 - metric_showcase: 3 large stat cards.
 - comparison_matrix: Table grid.
 - image_gallery: Visual mosaic of images.
-- quote_focus: A single powerful quote.
+- quote_focus: A single powerful quote or Thank You statement.
 - big_number: One massive statistic on the right + explanatory text.
+- data_chart: Visual data graph/chart (bar chart or line/area trend) for growth statistics, financial metrics, projections, or comparison data.
 
 SLIDE DECK DESIGN PRINCIPLES:
 1. Slide 1 MUST be "title_hero". The title for Slide 1 MUST be the neat, simple, core topic name in ALL CAPS (e.g., "TESLA Q4 EARNINGS", "ARTIFICIAL INTELLIGENCE"). Do not use conversational hooks for the first slide.
 2. NEVER use the same layout for two consecutive slides. Visual variety sustains attention.
 3. Follow a powerful narrative arc: Hook → Context/Problem → Core Insights → Evidence/Data → Conclusion/CTA.
-4. Every contentNote must describe SPECIFIC, CONCRETE content.
-5. For all slides EXCEPT slide 1, slide titles must be ACTION TITLES (3-8 words). BANNED: "Introduction", "Overview", "Summary".
-6. Include at least one metric_showcase or big_number slide for quantitative impact.
+4. Use "data_chart" or "metric_showcase" whenever the topic involves numbers, revenue, growth, adoption rates, timelines, or quantitative forecasts.
+5. The FINAL slide of every presentation MUST ALWAYS be a dedicated "THANK YOU" / Q&A / Next Steps closing slide (layout: "title_hero", "quote_focus", or "two_column_split") with title "THANK YOU" or "QUESTIONS & DISCUSSION", and subtitle inviting next steps or contact.
+6. Every contentNote must describe SPECIFIC, CONCRETE content.
+7. For all slides EXCEPT slide 1 and the final slide, slide titles must be ACTION TITLES (3-8 words).
 
 Return ONLY valid JSON. No markdown, no explanation, no commentary.`;
 
@@ -55,24 +57,25 @@ BEFORE WRITING EACH SLIDE, THINK ABOUT:
    - Max 1 core idea per slide.
    - Max 3-5 bullet points per slide.
    - Max 6-8 words per bullet point.
-3. ACTION TITLES: Do not use generic titles. State the slide's main takeaway.
+3. ACTION TITLES: State the slide's main takeaway. The last slide must be "THANK YOU" or "OPEN FOR QUESTIONS".
 
 OUTPUT FORMAT — return ONLY this JSON structure (ensure the "cards" array contains ONE object for EVERY slide in the provided outline):
-{"title":"","description":"","theme":"","colorPalette":{"primary":"#hex","secondary":"#hex","accent":"#hex","background":"#hex","surface":"#hex","text":"#hex","textMuted":"#hex","accents":["#hex","#hex","#hex","#hex"]},"cards":[{"id":"","order":1,"layout":"","badgeText":"","title":"","subtitle":"","elements":[{"id":"","type":"","content":"","items":[],"metricValue":"","metricLabel":"","iconName":"","imageQuery":"","imageCaption":"","title":""}],"imagePrompt":""}]}
+{"title":"","description":"","theme":"","colorPalette":{"primary":"#hex","secondary":"#hex","accent":"#hex","background":"#hex","surface":"#hex","text":"#hex","textMuted":"#hex","accents":["#hex","#hex","#hex","#hex"]},"cards":[{"id":"","order":1,"layout":"","badgeText":"","title":"","subtitle":"","elements":[{"id":"","type":"","content":"","items":[],"metricValue":"","metricLabel":"","iconName":"","imageQuery":"","imageCaption":"","title":"","chartType":"","chartData":[]}],"imagePrompt":""}]}
 
 ═══════════════════════════════════════════════════════════════════════════════
 LAYOUT-SPECIFIC ELEMENT RULES (CRITICAL — follow these EXACTLY):
 ═══════════════════════════════════════════════════════════════════════════════
 
-▸ title_hero: Uses ONLY card-level fields (title, subtitle, badgeText). No elements array items. The title MUST be the neat, simple core topic name in ALL CAPS.
+▸ title_hero: Uses ONLY card-level fields (title, subtitle, badgeText). No elements array items. For slide 1, title in ALL CAPS. If used as the final slide, title is "THANK YOU".
 ▸ two_column_split: Provide 3-5 elements (heading + paragraph + bullet_list). MUST include imagePrompt.
 ▸ three_column_grid: Exactly 3 callout elements with title, content, iconName.
 ▸ timeline_flow: 3-4 callout elements with title and content.
 ▸ metric_showcase: Exactly 3 stat_metric elements (metricValue, metricLabel, iconName).
 ▸ comparison_matrix: 5 bullet_list or callout elements.
 ▸ image_gallery: 2-6 image_block elements with imageQuery and imageCaption.
-▸ quote_focus: 1 callout or paragraph element with the quote text.
+▸ quote_focus: 1 callout or paragraph element with the quote text. If used as final slide, quote expresses appreciation or key parting thought.
 ▸ big_number: 1 stat_metric + 1-2 supporting elements (paragraph or bullet_list).
+▸ data_chart: 1-2 callout/paragraph elements for analytical context + 3-5 stat_metric elements with metricLabel (category/period) and metricValue (number or percentage, e.g. "Q1", "25%"). Set chartType to "bar" or "area".
 
 ═══════════════════════════════════════════════════════════════════════════════
 CONTENT QUALITY STANDARDS (non-negotiable):
