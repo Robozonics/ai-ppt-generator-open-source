@@ -1,18 +1,20 @@
 import { NextResponse } from "next/server";
 import { generateContent } from "@/lib/gemini";
 
-const MODIFY_SYSTEM_PROMPT = `You are an elite Executive Presentation Designer and Content Strategist. You modify JSON slide cards to fulfill the user's instruction while maintaining presentation-grade quality suitable for boardroom delivery.
+const MODIFY_SYSTEM_PROMPT = `You are an elite Executive Presentation Designer and Content Strategist. You have FULL AUTHORITY to modify the JSON slide cards and the presentation's color palette to fulfill the user's instruction.
 
 BEFORE MODIFYING, THINK STEP-BY-STEP:
-1. What is the user asking to change? Content? Layout? Visual? Tone?
+1. What is the user asking to change? Content? Layout? Visuals? Colors? Pictures?
 2. Does the change respect the SLIDE DIET? (Max 1 core idea, max 3-5 bullets, max 6-8 words per bullet).
 3. Does the title remain an ACTION TITLE?
 
 EDITING RULES:
-- Return ONLY valid JSON. No markdown formatting, no explanation, no commentary.
-- The root must be the modified card object.
-- Keep the 'id' and 'order' fields exactly the same.
-- Modify the 'title', 'subtitle', 'badgeText', 'imagePrompt', 'layout', or 'elements' array to completely fulfill the instruction.
+- Return ONLY valid JSON containing TWO objects: {"modifiedCard": { ... }, "modifiedColorPalette": { ... }}
+- 'modifiedCard' must contain the fully updated card. Keep the 'id' and 'order' fields exactly the same.
+- 'modifiedColorPalette' must contain the updated colorPalette (if colors were modified to fulfill the instruction) or the original one.
+- You can modify the 'title', 'subtitle', 'badgeText', 'imagePrompt', 'layout', or 'elements' array to completely fulfill the instruction.
+- If the user asks to add or change a picture, modify 'imagePrompt' (for layouts that support it) or 'imageQuery' in the 'image_block' elements. Make the prompt highly descriptive.
+- If the user asks to change the text color, background color, or theme, modify the 'modifiedColorPalette' properties (primary, secondary, text, background, etc.) with new valid hex codes.
 - If changing the layout type, restructure the elements array to match what the new layout requires:
   • title_hero: No elements needed.
   • two_column_split: 3-5 elements (heading + paragraph + bullet_list), plus imagePrompt.
@@ -28,7 +30,7 @@ EDITING RULES:
 
 export async function POST(req: Request) {
   try {
-    const { instruction, currentCard } = await req.json();
+    const { instruction, currentCard, colorPalette } = await req.json();
 
     if (!instruction || !currentCard) {
       return NextResponse.json(
@@ -37,7 +39,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const userPrompt = `Here is the current card JSON:\n${JSON.stringify(currentCard, null, 2)}\n\nInstruction: ${instruction}`;
+    const userPrompt = `Here is the current card JSON:\n${JSON.stringify(currentCard, null, 2)}\n\nHere is the current presentation colorPalette:\n${JSON.stringify(colorPalette, null, 2)}\n\nInstruction: ${instruction}`;
     
     const responseContent = await generateContent(MODIFY_SYSTEM_PROMPT, userPrompt);
 
@@ -48,7 +50,11 @@ export async function POST(req: Request) {
     if (!cleanJSON.startsWith("{")) cleanJSON = cleanJSON.substring(cleanJSON.indexOf("{"));
     if (!cleanJSON.endsWith("}")) cleanJSON = cleanJSON.substring(0, cleanJSON.lastIndexOf("}") + 1);
 
-    const modifiedCard = JSON.parse(cleanJSON);
+    const parsedData = JSON.parse(cleanJSON);
+    
+    // Support either the new nested format or the old flat format
+    const modifiedCard = parsedData.modifiedCard || parsedData;
+    const modifiedColorPalette = parsedData.modifiedColorPalette || colorPalette;
 
     // Preserve immutable fields from the original card
     modifiedCard.id = currentCard.id;
@@ -70,7 +76,7 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json({ modifiedCard });
+    return NextResponse.json({ modifiedCard, modifiedColorPalette });
   } catch (error: any) {
     console.error("Card modification error:", error);
     return NextResponse.json(

@@ -9,11 +9,13 @@
  */
 
 const AESTHETIC_SUFFIXES = [
+  "professional corporate presentation style",
+  "clean minimalist",
   "photorealistic",
-  "8k",
+  "8k resolution",
   "highly detailed",
   "cinematic lighting",
-  "professional photography",
+  "award-winning photography",
   "sharp focus",
 ];
 
@@ -33,6 +35,25 @@ export function resolveImageUrl(prompt: string): string {
   const seed = Math.floor(Math.random() * 10000);
 
   return `https://image.pollinations.ai/prompt/${encoded}?width=1280&height=720&nologo=true&seed=${seed}`;
+}
+
+/**
+ * Synchronous web picture resolver - returns a LoremFlickr or similar URL
+ * that fetches random images based on a keyword.
+ */
+export function resolveWebImage(prompt: string): string {
+  const cleaned = prompt.trim().replace(/\s+/g, " ");
+  
+  if (!cleaned) {
+    return "https://loremflickr.com/1280/720/business";
+  }
+
+  // Extract a few keywords from the prompt for the web search
+  const keywords = cleaned.split(" ").slice(0, 3).join(",");
+  const encoded = encodeURIComponent(keywords);
+  const seed = Math.floor(Math.random() * 10000);
+
+  return `https://loremflickr.com/1280/720/${encoded}?lock=${seed}`;
 }
 
 /**

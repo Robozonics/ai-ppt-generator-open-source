@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { generateContent } from "@/lib/gemini";
-import { resolveImageUrl } from "@/lib/imageResolver";
+import { resolveImageUrl, resolveWebImage } from "@/lib/imageResolver";
 import { PresentationDeckSchema } from "@/lib/schema";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -144,6 +144,7 @@ export async function POST(req: Request) {
     const slideCount: number = body.slideCount ?? 6;
     const theme: string = body.theme ?? "nebula_dark";
     const verbosity: string = body.verbosity ?? "medium";
+    const imageSource: string = body.imageSource ?? "ai";
 
     if (!topic || typeof topic !== "string" || !topic.trim()) {
       return NextResponse.json(
@@ -226,15 +227,20 @@ export async function POST(req: Request) {
       );
     }
 
-    // ── Stage 3: Hydrate images via Pollinations ───────────────────────────
+    // ── Stage 3: Hydrate images via Pollinations or Web ───────────────────
     if (deck.cards && Array.isArray(deck.cards)) {
       deck.cards = deck.cards.map((card: any) => {
-        // Resolve card-level image prompt — always generate an image URL
+        // Resolve card-level image prompt
         if (card.imagePrompt && typeof card.imagePrompt === "string") {
-          card.imageUrl = resolveImageUrl(card.imagePrompt);
+          card.imageUrl = imageSource === "web" 
+            ? resolveWebImage(card.imagePrompt) 
+            : resolveImageUrl(card.imagePrompt);
         } else if (card.layout === "two_column_split" || card.layout === "quote_focus") {
           // Generate a fallback image for layouts that need visuals
-          card.imageUrl = resolveImageUrl(`${card.title} professional corporate visual`);
+          const fallbackQuery = `${card.title} professional corporate visual`;
+          card.imageUrl = imageSource === "web" 
+            ? resolveWebImage(fallbackQuery) 
+            : resolveImageUrl(fallbackQuery);
         }
 
         // Resolve element-level image queries
@@ -245,7 +251,9 @@ export async function POST(req: Request) {
               el.imageQuery &&
               typeof el.imageQuery === "string"
             ) {
-              el.imageUrl = resolveImageUrl(el.imageQuery);
+              el.imageUrl = imageSource === "web" 
+                ? resolveWebImage(el.imageQuery) 
+                : resolveImageUrl(el.imageQuery);
             }
             return el;
           });

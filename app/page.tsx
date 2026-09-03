@@ -14,6 +14,7 @@ export default function LandingPage() {
   const [slideCount, setSlideCount] = useState<number>(6);
   const [verbosity, setVerbosity] = useState<Verbosity>("medium");
   const [theme, setTheme] = useState<string>("nebula_dark");
+  const [imageSource, setImageSource] = useState<string>("ai");
   const [isPresentMode, setIsPresentMode] = useState(false);
   const [isExportingPPTX, setIsExportingPPTX] = useState(false);
   
@@ -55,7 +56,8 @@ export default function LandingPage() {
           topic: prompt,
           slideCount,
           verbosity,
-          theme
+          theme,
+          imageSource
         }),
       });
       
@@ -82,14 +84,19 @@ export default function LandingPage() {
     const res = await fetch("/api/modify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ instruction, currentCard }),
+      body: JSON.stringify({ instruction, currentCard, colorPalette: deck.colorPalette }),
     });
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
       throw new Error(errData.error || "Modification failed.");
     }
     const data = await res.json();
-    updateCard(activeCardId, data.modifiedCard);
+    if (data.modifiedCard) {
+      updateCard(activeCardId, data.modifiedCard);
+    }
+    if (data.modifiedColorPalette) {
+      setDeck({ ...deck, colorPalette: data.modifiedColorPalette });
+    }
   };
 
   const handleExportPPTX = async () => {
@@ -292,7 +299,7 @@ export default function LandingPage() {
               </button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               
               {/* Slide Count Control */}
               <div className="space-y-3">
@@ -356,6 +363,26 @@ export default function LandingPage() {
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                     <Check className="w-4 h-4 text-purple-400 opacity-50" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Image Source Control */}
+              <div className="space-y-3">
+                <label className="text-xs font-semibold text-teal-300 uppercase tracking-wider flex items-center gap-2">
+                  <Palette className="w-4 h-4" /> Image Source
+                </label>
+                <div className="relative">
+                  <select 
+                    value={imageSource}
+                    onChange={(e) => setImageSource(e.target.value)}
+                    className="w-full appearance-none bg-black/40 border border-white/5 rounded-xl outline-none text-sm px-4 py-3 text-white focus:ring-1 focus:ring-teal-500/50 transition-all shadow-inner cursor-pointer"
+                  >
+                    <option value="ai">AI Images</option>
+                    <option value="web">Web Pictures</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <Check className="w-4 h-4 text-teal-400 opacity-50" />
                   </div>
                 </div>
               </div>
