@@ -1,5 +1,4 @@
 {
-  "name": "robozonics-ai",
   "version": 2,
   "functions": {
     "app/api/generate/route.ts": {

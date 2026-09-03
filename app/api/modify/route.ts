@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { generateContent } from "@/lib/gemini";
 
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
+
 const MODIFY_SYSTEM_PROMPT = `You are an elite Executive Presentation Designer and Content Strategist. You modify a SINGLE slide card to fulfill the user's instructions with utmost precision and boardroom presentation quality.
 
 CRITICAL SCOPE RULE:

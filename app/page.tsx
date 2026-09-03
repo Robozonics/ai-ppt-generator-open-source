@@ -62,8 +62,11 @@ export default function LandingPage() {
       });
       
       if (!res.ok) {
+        if (res.status === 504) {
+          throw new Error("Generation timed out (504). Please try again — the AI server took too long.");
+        }
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "Generation failed");
+        throw new Error(errData.error || `Generation failed (HTTP ${res.status})`);
       }
 
       const data = await res.json();

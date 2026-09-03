@@ -3,6 +3,9 @@ import { generateContent } from "@/lib/gemini";
 import { resolveImageUrl, resolveWebImage } from "@/lib/imageResolver";
 import { PresentationDeckSchema } from "@/lib/schema";
 
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Stage 1 System Prompt — Professional Outline Generation
 // ─────────────────────────────────────────────────────────────────────────────

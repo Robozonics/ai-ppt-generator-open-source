@@ -13,7 +13,7 @@ const GEMINI_API_KEYS = [
 const MODEL = "gemini-3.5-flash";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
-const MAX_RETRIES = 4;
+const MAX_RETRIES = 2;
 
 /**
  * Extract the first valid JSON object from a string that may contain
@@ -123,8 +123,8 @@ export async function generateContent(
 
       if (!isRetryable || attempt === MAX_RETRIES) throw err;
 
-      // Exponential backoff: 1s, 3s, 9s, 27s
-      const delay = 1000 * Math.pow(3, attempt);
+      // Fast linear backoff: 800ms, 1600ms
+      const delay = 800 * (attempt + 1);
       console.log(
         `[gemini] Retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_RETRIES})...`
       );
