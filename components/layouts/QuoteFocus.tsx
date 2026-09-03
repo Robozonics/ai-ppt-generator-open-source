@@ -51,10 +51,8 @@ export function QuoteFocus({ card }: { card: Card }) {
               style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-primary)), rgb(var(--theme-secondary)))` }}
             />
             <p
-              className="text-xl font-medium text-transparent bg-clip-text"
-              style={{
-                backgroundImage: `linear-gradient(to right, rgba(var(--theme-text), 0.85), rgba(var(--theme-text-muted), 0.9))`,
-              }}
+              className="text-xl font-semibold"
+              style={{ color: `rgb(var(--theme-text))` }}
             >
               {card.subtitle}
             </p>

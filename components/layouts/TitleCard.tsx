@@ -39,9 +39,9 @@ export function TitleCard({ card }: { card?: Card }) {
       )}
 
       <h1
-        className="text-5xl md:text-6xl font-black tracking-tight mb-8 leading-tight z-10 text-transparent bg-clip-text drop-shadow-lg"
+        className="text-4xl md:text-6xl font-black tracking-tight mb-6 leading-tight z-10 text-transparent bg-clip-text drop-shadow-lg"
         style={{
-          backgroundImage: `linear-gradient(to bottom right, rgb(var(--theme-text)), rgba(var(--theme-primary), 0.8), rgba(var(--theme-secondary), 0.7))`,
+          backgroundImage: `linear-gradient(to bottom right, rgb(var(--theme-text)), rgba(var(--theme-primary), 0.9), rgba(var(--theme-secondary), 0.8))`,
         }}
       >
         {title}
@@ -49,10 +49,8 @@ export function TitleCard({ card }: { card?: Card }) {
 
       {subtitle && (
         <p
-          className="text-xl leading-relaxed max-w-3xl font-light z-10 text-transparent bg-clip-text"
-          style={{
-            backgroundImage: `linear-gradient(to right, rgba(var(--theme-text), 0.85), rgba(var(--theme-text-muted), 0.9))`,
-          }}
+          className="text-lg md:text-2xl leading-relaxed max-w-3xl font-light z-10"
+          style={{ color: `rgb(var(--theme-text-muted))` }}
         >
           {subtitle}
         </p>

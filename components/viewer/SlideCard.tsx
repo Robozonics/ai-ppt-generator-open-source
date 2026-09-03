@@ -6,13 +6,60 @@ interface SlideCardProps {
   card: Card;
   theme?: string;
   isActive?: boolean;
+  isPresentMode?: boolean;
   onClick?: () => void;
   children: React.ReactNode;
 }
 
-export function SlideCard({ card, theme, isActive, onClick, children }: SlideCardProps) {
+export function SlideCard({ card, theme, isActive, isPresentMode = false, onClick, children }: SlideCardProps) {
   // If this particular card has its own custom colorPalette override, apply it locally!
   const localPaletteVars = card.colorPalette ? paletteToCssVars(card.colorPalette) : {};
+
+  if (isPresentMode) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 1.02 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full h-screen max-w-none relative flex flex-col justify-center overflow-hidden p-8 md:p-16 lg:p-24 select-none"
+        style={{
+          ...localPaletteVars,
+          backgroundColor: `rgb(var(--theme-bg))`,
+        }}
+      >
+        {/* Dynamic ambient lights spanning entire screen */}
+        <div
+          className="absolute -top-40 -right-40 w-[55vw] h-[55vw] rounded-full blur-[140px] pointer-events-none opacity-30 animate-pulse-glow"
+          style={{ backgroundColor: `rgb(var(--theme-secondary))` }}
+        />
+        <div
+          className="absolute -bottom-40 -left-40 w-[55vw] h-[55vw] rounded-full blur-[140px] pointer-events-none opacity-25 animate-pulse-glow"
+          style={{ backgroundColor: `rgb(var(--theme-primary))` }}
+        />
+
+        {/* Optional Badge */}
+        {card.badgeText && (
+          <div
+            className="absolute top-8 right-12 z-20 px-5 py-2 rounded-full text-xs font-black tracking-widest uppercase border shadow-lg backdrop-blur-md"
+            style={{
+              backgroundColor: `rgba(var(--theme-primary), 0.15)`,
+              color: `rgb(var(--theme-primary))`,
+              borderColor: `rgba(var(--theme-primary), 0.4)`,
+              boxShadow: `0 0 25px rgba(var(--theme-primary), 0.25)`,
+            }}
+          >
+            {card.badgeText}
+          </div>
+        )}
+
+        {/* Full-screen content canvas */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto h-full flex flex-col justify-center">
+          {children}
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -24,7 +71,7 @@ export function SlideCard({ card, theme, isActive, onClick, children }: SlideCar
       className={[
         "slide-card-wrapper", // Used by globals.css print queries
         "w-full max-w-[1120px] aspect-video relative flex flex-col overflow-hidden",
-        "rounded-3xl p-14 md:p-16",
+        "rounded-3xl p-10 md:p-14",
         "backdrop-blur-3xl",
         "snap-center shrink-0",
         "transition-all duration-500 cursor-pointer group",
@@ -86,7 +133,7 @@ export function SlideCard({ card, theme, isActive, onClick, children }: SlideCar
       )}
 
       {/* Content layer */}
-      <div className="relative z-10 w-full h-full flex flex-col">
+      <div className="relative z-10 w-full h-full flex flex-col justify-center">
         {children}
       </div>
     </motion.div>

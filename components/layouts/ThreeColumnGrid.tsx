@@ -12,7 +12,7 @@ export function ThreeColumnGrid({ card }: { card?: Card }) {
   ];
 
   const getIcon = (name: string, colorStyle: React.CSSProperties) => {
-    const cls = "w-8 h-8";
+    const cls = "w-7 h-7";
     const props = { className: cls, style: colorStyle };
     switch(name) {
       case "Brain":   case "brain":   return <Brain {...props} />;
@@ -30,16 +30,16 @@ export function ThreeColumnGrid({ card }: { card?: Card }) {
   const accentVars = ["--theme-accent-1", "--theme-accent-2", "--theme-accent-3"];
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <div className="mb-10 text-center">
+    <div className="w-full h-full flex flex-col justify-center">
+      <div className="mb-8 text-center">
         <h2
-          className="text-3xl font-bold tracking-tight mb-3 text-transparent bg-clip-text"
-          style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))` }}
+          className="text-3xl md:text-4xl font-extrabold tracking-tight mb-3 text-transparent bg-clip-text"
+          style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.85))` }}
         >
           {title}
         </h2>
         {subtitle && (
-          <p className="text-lg leading-relaxed max-w-3xl mx-auto text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
+          <p className="text-base md:text-lg max-w-3xl mx-auto font-light" style={{ color: `rgb(var(--theme-text-muted))` }}>
             {subtitle}
           </p>
         )}
@@ -51,29 +51,29 @@ export function ThreeColumnGrid({ card }: { card?: Card }) {
         />
       </div>
 
-      <div className="flex-1 grid grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
         {items.map((el: any, idx: number) => {
           const accentVar = accentVars[idx % accentVars.length];
           return (
             <div
               key={el.id || idx}
-              className="flex flex-col rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 border"
+              className="flex flex-col rounded-2xl p-6 md:p-8 transition-all duration-300 hover:-translate-y-1.5 border backdrop-blur-md shadow-xl"
               style={{
-                backgroundImage: `linear-gradient(to bottom, rgba(var(${accentVar}), 0.12), rgba(var(${accentVar}), 0.04))`,
-                borderColor: `rgba(var(${accentVar}), 0.25)`,
-                boxShadow: `0 0 30px -8px rgba(var(${accentVar}), 0.2)`,
+                backgroundImage: `linear-gradient(to bottom, rgba(var(${accentVar}), 0.12), rgba(var(${accentVar}), 0.03))`,
+                borderColor: `rgba(var(${accentVar}), 0.3)`,
+                boxShadow: `0 0 30px -8px rgba(var(${accentVar}), 0.25)`,
               }}
             >
               <div
-                className="p-3 rounded-xl w-fit mb-6"
-                style={{ backgroundColor: `rgba(var(${accentVar}), 0.15)` }}
+                className="p-3 rounded-xl w-fit mb-5 shadow-sm"
+                style={{ backgroundColor: `rgba(var(${accentVar}), 0.18)` }}
               >
                 {getIcon(el.icon || el.iconName || "Brain", { color: `rgb(var(${accentVar}))` })}
               </div>
-              <h3 className="text-xl font-bold mb-4 text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))` }}>
+              <h3 className="text-xl font-bold mb-3" style={{ color: `rgb(var(--theme-text))` }}>
                 {el.title || el.content?.slice(0, 30) || "Feature"}
               </h3>
-              <p className="text-base leading-relaxed text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
+              <p className="text-base leading-relaxed font-light" style={{ color: `rgb(var(--theme-text-muted))` }}>
                 {el.content}
               </p>
             </div>

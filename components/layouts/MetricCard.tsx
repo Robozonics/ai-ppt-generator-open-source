@@ -12,7 +12,7 @@ export function MetricCard({ card }: { card?: Card }) {
   ];
 
   const getIcon = (name: string, colorStyle: React.CSSProperties) => {
-    const cls = "w-8 h-8";
+    const cls = "w-7 h-7";
     const props = { className: cls, style: colorStyle };
     switch(name) {
       case "TrendingUp": case "trending_up": return <TrendingUp {...props} />;
@@ -27,16 +27,16 @@ export function MetricCard({ card }: { card?: Card }) {
   const accentVars = ["--theme-accent-1", "--theme-accent-2", "--theme-accent-3"];
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <div className="mb-10 text-center">
+    <div className="w-full h-full flex flex-col justify-center">
+      <div className="mb-8 text-center">
         <h2
-          className="text-3xl font-bold tracking-tight mb-3 text-transparent bg-clip-text"
-          style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))` }}
+          className="text-3xl md:text-4xl font-extrabold tracking-tight mb-3 text-transparent bg-clip-text"
+          style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.85))` }}
         >
           {title}
         </h2>
         {subtitle && (
-          <p className="text-lg leading-relaxed max-w-3xl mx-auto text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
+          <p className="text-base md:text-lg max-w-3xl mx-auto font-light" style={{ color: `rgb(var(--theme-text-muted))` }}>
             {subtitle}
           </p>
         )}
@@ -48,36 +48,37 @@ export function MetricCard({ card }: { card?: Card }) {
         />
       </div>
 
-      <div className="flex-1 flex items-center justify-center gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch max-w-5xl mx-auto w-full">
         {metrics.map((el: any, index: number) => {
           const accentVar = accentVars[index % accentVars.length];
           return (
             <div
               key={el.id || index}
-              className="flex-1 flex flex-col items-center justify-center rounded-2xl p-10 transition-all duration-300 backdrop-blur-md hover:-translate-y-1 border"
+              className="flex-1 flex flex-col items-center justify-center rounded-2xl p-8 md:p-10 transition-all duration-300 backdrop-blur-xl hover:-translate-y-1.5 border shadow-2xl"
               style={{
-                backgroundImage: `linear-gradient(to bottom, rgba(var(${accentVar}), 0.12), rgba(var(${accentVar}), 0.04))`,
-                borderColor: `rgba(var(${accentVar}), 0.2)`,
-                boxShadow: `0 0 30px -8px rgba(var(${accentVar}), 0.25)`,
+                backgroundImage: `linear-gradient(to bottom, rgba(var(${accentVar}), 0.12), rgba(var(${accentVar}), 0.03))`,
+                borderColor: `rgba(var(${accentVar}), 0.3)`,
+                boxShadow: `0 0 35px -8px rgba(var(${accentVar}), 0.3)`,
               }}
             >
               <div
-                className="p-3 rounded-xl mb-6"
-                style={{ backgroundColor: `rgba(var(${accentVar}), 0.15)` }}
+                className="p-3.5 rounded-2xl mb-5 shadow-sm"
+                style={{ backgroundColor: `rgba(var(${accentVar}), 0.18)` }}
               >
                 {getIcon(el.icon || el.iconName || "TrendingUp", { color: `rgb(var(${accentVar}))` })}
               </div>
               <div
-                className="text-5xl font-black tracking-tight mb-3 text-transparent bg-clip-text"
+                className="text-5xl md:text-6xl font-black tracking-tight mb-3"
                 style={{
-                  backgroundImage: `linear-gradient(to bottom, rgba(var(${accentVar}), 0.9), rgb(var(${accentVar})))`,
+                  color: `rgb(var(${accentVar}))`,
+                  textShadow: `0 0 25px rgba(var(${accentVar}), 0.4)`,
                 }}
               >
                 {el.metricValue}
               </div>
               <div
-                className="text-sm leading-relaxed font-semibold text-center uppercase tracking-wider text-transparent bg-clip-text"
-                style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}
+                className="text-sm md:text-base font-semibold text-center uppercase tracking-wider leading-snug"
+                style={{ color: `rgb(var(--theme-text))` }}
               >
                 {el.metricLabel}
               </div>

@@ -1,5 +1,5 @@
 import { Card } from "@/lib/schema";
-import { getImageUrl } from "@/lib/imageResolver";
+import { resolveWebImage } from "@/lib/imageResolver";
 
 export function TwoColumnSplit({ card }: { card?: Card }) {
   const title = card?.title || "Paradigm Shift in Reasoning";
@@ -10,16 +10,16 @@ export function TwoColumnSplit({ card }: { card?: Card }) {
     { id: "3", type: "bullet_list", items: ["Chain of Thought execution", "Tool use and API integration", "Memory and context window expansion"] }
   ];
 
-  const imageUrl = card?.imageUrl || getImageUrl(card?.imagePrompt || "futuristic AI glowing neural network abstract");
+  const imageUrl = card?.imageUrl || resolveWebImage(card?.imagePrompt || card?.title || "technology business innovation");
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col justify-center">
       {/* Title with gradient accent underline */}
-      <div className="mb-10">
+      <div className="mb-8">
         <h2
-          className="text-3xl font-bold tracking-tight mb-3 text-transparent bg-clip-text"
+          className="text-3xl md:text-4xl font-extrabold tracking-tight mb-3 text-transparent bg-clip-text"
           style={{
-            backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))`,
+            backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.85))`,
           }}
         >
           {title}
@@ -30,14 +30,14 @@ export function TwoColumnSplit({ card }: { card?: Card }) {
         />
       </div>
 
-      <div className="flex-1 grid grid-cols-2 gap-12 min-h-0">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 min-h-0 items-center">
         {/* Content Column */}
-        <div className="flex flex-col justify-center space-y-6 overflow-y-auto">
+        <div className="flex flex-col justify-center space-y-6 overflow-y-auto pr-2">
           {items.map((el: any, idx: number) => (
             <div key={el.id || idx}>
               {el.type === "heading" && (
                 <h3
-                  className="text-xl font-semibold mb-2 text-transparent bg-clip-text"
+                  className="text-xl md:text-2xl font-bold mb-2 text-transparent bg-clip-text"
                   style={{
                     backgroundImage: `linear-gradient(to right, rgb(var(--theme-primary)), rgb(var(--theme-secondary)))`,
                   }}
@@ -46,37 +46,36 @@ export function TwoColumnSplit({ card }: { card?: Card }) {
                 </h3>
               )}
               {el.type === "paragraph" && (
-                <p style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }} className="text-lg leading-relaxed text-transparent bg-clip-text">
+                <p className="text-base md:text-lg leading-relaxed text-slate-200 font-light" style={{ color: `rgb(var(--theme-text))` }}>
                   {el.content}
                 </p>
               )}
               {el.type === "bullet_list" && (
-                <ul className="space-y-3 text-lg leading-relaxed text-transparent bg-clip-text" style={{ backgroundImage: `linear-gradient(to right, rgb(var(--theme-text-muted)), rgba(var(--theme-text-muted), 0.7))` }}>
+                <ul className="space-y-3 text-base md:text-lg leading-relaxed text-slate-300">
                   {el.items?.map((item: string, i: number) => (
                     <li key={i} className="flex items-start gap-3">
                       <span
                         className="mt-2 w-2 h-2 rounded-full shrink-0"
                         style={{
                           backgroundImage: `linear-gradient(to bottom right, rgb(var(--theme-primary)), rgb(var(--theme-secondary)))`,
-                          boxShadow: `0 0 8px rgba(var(--theme-primary), 0.5)`,
+                          boxShadow: `0 0 8px rgba(var(--theme-primary), 0.6)`,
                         }}
                       />
-                      {item}
+                      <span style={{ color: `rgb(var(--theme-text-muted))` }}>{item}</span>
                     </li>
                   ))}
                 </ul>
               )}
               {el.type === "callout" && (
                 <div
-                  className="p-4 rounded-xl text-transparent bg-clip-text"
+                  className="p-5 rounded-xl border backdrop-blur-sm shadow-inner"
                   style={{
-                    backgroundColor: `rgba(var(--theme-primary), 0.1)`,
-                    borderColor: `rgba(var(--theme-primary), 0.2)`,
-                    border: `1px solid rgba(var(--theme-primary), 0.2)`,
-                    backgroundImage: `linear-gradient(to right, rgb(var(--theme-text)), rgba(var(--theme-text), 0.75))`,
+                    backgroundColor: `rgba(var(--theme-primary), 0.08)`,
+                    borderColor: `rgba(var(--theme-primary), 0.25)`,
+                    color: `rgb(var(--theme-text))`,
                   }}
                 >
-                  {el.content}
+                  <p className="font-medium leading-relaxed">{el.content}</p>
                 </div>
               )}
             </div>
@@ -85,27 +84,23 @@ export function TwoColumnSplit({ card }: { card?: Card }) {
 
         {/* Image Column */}
         <div
-          className="relative rounded-2xl overflow-hidden border"
+          className="relative rounded-2xl overflow-hidden border h-full max-h-[380px] md:max-h-[440px] shadow-2xl group"
           style={{
             backgroundImage: `linear-gradient(to bottom right, rgba(var(--theme-primary), 0.15), rgba(var(--theme-secondary), 0.15))`,
-            borderColor: `rgba(var(--theme-text), 0.1)`,
-            boxShadow: `0 0 40px -10px rgba(var(--theme-primary), 0.15)`,
+            borderColor: `rgba(var(--theme-primary), 0.25)`,
+            boxShadow: `0 0 40px -10px rgba(var(--theme-primary), 0.2)`,
           }}
         >
           <img
             src={imageUrl}
             alt="Slide visual"
-            className="rounded-2xl object-cover w-full h-full"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-          {/* Fallback gradient if image doesn't load */}
-          <div
-            className="absolute inset-0 -z-10"
-            style={{
-              backgroundImage: `linear-gradient(to bottom right, rgba(var(--theme-primary), 0.2), rgba(var(--theme-secondary), 0.2), rgba(var(--theme-accent), 0.2))`,
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            onError={(e) => {
+              // Graceful fallback to Unsplash deep tech visual instead of hiding
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1280&h=720&q=80';
             }}
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
         </div>
       </div>
     </div>
