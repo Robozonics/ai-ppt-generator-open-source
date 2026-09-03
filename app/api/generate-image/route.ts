@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
+import { getGeminiApiKeys } from "@/lib/gemini";
 
-const GEMINI_API_KEYS = [
-  process.env.GEMINI_API_KEY || "",
-].filter(Boolean);
 const IMAGE_MODEL = "gemini-3.1-flash-image";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent`;
 
-const MAX_RETRIES = 2;
+let currentImageKeyIndex = 0;
 
 export async function POST(req: Request) {
   try {
@@ -22,11 +20,16 @@ export async function POST(req: Request) {
     // Enhanced prompt for professional slide imagery
     const enhancedPrompt = `Generate a high-quality, professional image for a presentation slide. The image should be clean, modern, and suitable for a corporate/professional presentation. Style: photorealistic, 8K, cinematic lighting, sharp focus, no text overlay, no watermarks. Subject: ${prompt}`;
 
+    const keys = getGeminiApiKeys();
+    const maxRetries = Math.max(keys.length * 2, 4);
     let lastError: string = "";
 
-    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
-        const currentKey = GEMINI_API_KEYS[attempt % GEMINI_API_KEYS.length] || "";
+        const keyIdx = (currentImageKeyIndex + attempt) % (keys.length || 1);
+        const currentKey = keys[keyIdx] || "";
+        if (!currentKey) break;
+
         const response = await fetch(API_URL, {
           method: "POST",
           headers: {
@@ -49,17 +52,23 @@ export async function POST(req: Request) {
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error(`[generate-image] API error (attempt ${attempt + 1}):`, response.status, errorText);
+          console.error(`[generate-image] API error on key ${keyIdx + 1}/${keys.length}:`, response.status, errorText);
           lastError = `Image generation failed: ${response.status}`;
 
-          // Don't retry on 4xx errors (client errors) unless it is a 403 or 429 (quota/auth which might be fixed by another key)
-          if (response.status >= 400 && response.status < 500 && response.status !== 403 && response.status !== 429) {
+          // If quota or auth, immediately failover to next key without waiting
+          if (response.status === 429 || response.status === 403) {
+            currentImageKeyIndex = (keyIdx + 1) % keys.length;
+            continue;
+          }
+
+          // Other 4xx client errors
+          if (response.status >= 400 && response.status < 500) {
             break;
           }
 
-          // Retry on 5xx errors
-          if (attempt < MAX_RETRIES) {
-            await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+          // Retry on 5xx errors with short delay
+          if (attempt < maxRetries - 1) {
+            await new Promise((r) => setTimeout(r, 600 * (attempt + 1)));
             continue;
           }
 
@@ -74,7 +83,7 @@ export async function POST(req: Request) {
 
         if (!parts || parts.length === 0) {
           console.warn("[generate-image] No parts in response, retrying...");
-          if (attempt < MAX_RETRIES) continue;
+          if (attempt < maxRetries - 1) continue;
           return NextResponse.json(
             { error: "No image generated" },
             { status: 500 }
@@ -87,6 +96,7 @@ export async function POST(req: Request) {
         );
 
         if (imagePart) {
+          currentImageKeyIndex = keyIdx;
           // Return base64 image data
           return NextResponse.json({
             imageData: imagePart.inlineData.data,
@@ -97,12 +107,12 @@ export async function POST(req: Request) {
 
         // No image part found, try again
         console.warn("[generate-image] No image part in response parts, retrying...");
-        if (attempt < MAX_RETRIES) continue;
+        if (attempt < maxRetries - 1) continue;
 
       } catch (fetchError: any) {
         console.error(`[generate-image] Fetch error (attempt ${attempt + 1}):`, fetchError.message);
         lastError = fetchError.message;
-        if (attempt < MAX_RETRIES) {
+        if (attempt < maxRetries - 1) {
           await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
           continue;
         }
